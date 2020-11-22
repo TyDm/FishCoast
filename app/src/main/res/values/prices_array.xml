@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="prices_array">
+        <item>Склад-опт</item>
+        <item>Ёршъ</item>
+        <item>Безнал</item>
+        <item>Цех</item>
+        <item>Розница</item>
+    </string-array>
+</resources>

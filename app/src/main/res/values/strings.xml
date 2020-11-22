@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Рыбный Берег</string>
+    <string name="title_clients">Клиенты</string>
+    <string name="title_orders">Заказы</string>
+    <string name="title_price">Прайс</string>
+    <string name="action_add">Добавить</string>
+    <string name="title_newClient">Новый клиент</string>
+    <string name="city">Город</string>
+    <string name="streethome">Улица, дом</string>
+    <string name="company">Компания</string>
+    <string name="button_add">Добавить</string>
+    <string name="phone">Телефон</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_import">Импортировать</string>
+    <string name="name">Наименование</string>
+    <string name="cost">Цена</string>
+    <string name="newposition">Новая позиция</string>
+    <string name="add">Добавить</string>
+    <string name="item_order_recycler_name">%1$s %2$1.1f</string>
+</resources>
