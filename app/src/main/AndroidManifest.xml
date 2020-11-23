@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.myapplication">
+    package="com.example.FishCoast">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -14,18 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".orders.NewOrderActivity"></activity>
+        <activity android:name="com.example.FishCoast.orders.NewOrderActivity"></activity>
         <activity
-            android:name=".clients.ClientInfoActivity"
+            android:name="com.example.FishCoast.clients.ClientInfoActivity"
             android:label="Клиент"></activity>
         <activity
-            android:name=".ui.price.NewPositionActivity"
+            android:name="com.example.FishCoast.ui.price.NewPositionActivity"
             android:label="@string/newposition"></activity>
         <activity
-            android:name=".clients.ClientEditActivity"
+            android:name="com.example.FishCoast.clients.ClientEditActivity"
             android:label="@string/title_newClient" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.FishCoast.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

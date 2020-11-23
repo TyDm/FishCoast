@@ -1,4 +1,4 @@
-package com.example.myapplication.clients;
+package com.example.FishCoast.clients;
 
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
-import com.example.myapplication.REQUEST_CODE;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
+import com.example.FishCoast.REQUEST_CODE;
 
 
 import static android.app.Activity.RESULT_OK;

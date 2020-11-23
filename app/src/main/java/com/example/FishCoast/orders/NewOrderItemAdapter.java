@@ -1,4 +1,4 @@
-package com.example.myapplication.orders;
+package com.example.FishCoast.orders;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,9 +20,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
-import com.example.myapplication.StringFormat;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
+import com.example.FishCoast.StringFormat;
 
 import java.util.ArrayList;
 

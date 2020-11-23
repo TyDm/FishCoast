@@ -1,21 +1,15 @@
-package com.example.myapplication.orders;
+package com.example.FishCoast.orders;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.myapplication.R;
-import com.example.myapplication.StringFormat;
-
-import java.util.ArrayList;
+import com.example.FishCoast.R;
 
 class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.NewOrderPriceViewHolder> {
     private Context context;

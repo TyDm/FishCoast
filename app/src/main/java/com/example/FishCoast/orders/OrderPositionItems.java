@@ -1,16 +1,17 @@
-package com.example.myapplication.orders;
+package com.example.FishCoast.orders;
 
-
-class OrderPriceItems {
+public class OrderPositionItems {
 
     private String name;
     private Double cost;
     private int unit;
+    private Double quantity;
 
-    public OrderPriceItems(String name, Double cost, int unit) {
+    public OrderPositionItems(String name, Double cost, int unit, Double quantity) {
         this.name = name;
         this.cost = cost;
         this.unit = unit;
+        this.quantity = quantity;
     }
 
     public String getName() {
@@ -37,4 +38,11 @@ class OrderPriceItems {
         this.unit = unit;
     }
 
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
 }

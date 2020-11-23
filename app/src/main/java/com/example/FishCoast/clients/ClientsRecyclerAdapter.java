@@ -1,4 +1,4 @@
-package com.example.myapplication.clients;
+package com.example.FishCoast.clients;
 
 
 import android.content.ContentValues;
@@ -14,8 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
 
 public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecyclerAdapter.ClientsViewHolder> {
 

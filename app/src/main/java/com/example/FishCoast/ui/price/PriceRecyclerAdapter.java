@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.price;
+package com.example.FishCoast.ui.price;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.R;
+import com.example.FishCoast.R;
 
 public class PriceRecyclerAdapter extends RecyclerView.Adapter<PriceRecyclerAdapter.PriceViewHolder> {
     private Context context;

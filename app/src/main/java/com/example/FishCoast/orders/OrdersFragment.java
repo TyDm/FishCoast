@@ -1,4 +1,4 @@
-package com.example.myapplication.orders;
+package com.example.FishCoast.orders;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.myapplication.R;
+import com.example.FishCoast.R;
 
 public class OrdersFragment extends Fragment {
 

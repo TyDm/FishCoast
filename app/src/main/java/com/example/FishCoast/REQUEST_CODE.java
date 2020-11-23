@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.FishCoast;
 
 public enum REQUEST_CODE {
     instane;

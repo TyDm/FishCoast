@@ -1,17 +1,16 @@
-package com.example.myapplication.clients;
+package com.example.FishCoast.ui.price;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class ClientsViewModel extends ViewModel {
+public class PriceViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public ClientsViewModel() {
+    public PriceViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
-
+        mText.setValue("This is notifications fragment");
     }
 
     public LiveData<String> getText() {

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.price;
+package com.example.FishCoast.ui.price;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
 
 
 public class NewPositionActivity extends AppCompatActivity {

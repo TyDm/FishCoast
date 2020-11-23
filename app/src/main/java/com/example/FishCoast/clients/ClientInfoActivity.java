@@ -1,4 +1,4 @@
-package com.example.myapplication.clients;
+package com.example.FishCoast.clients;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -8,17 +8,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.orders.NewOrderActivity;
-import com.example.myapplication.R;
-import com.example.myapplication.REQUEST_CODE;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.orders.NewOrderActivity;
+import com.example.FishCoast.R;
+import com.example.FishCoast.REQUEST_CODE;
 
 public class ClientInfoActivity extends AppCompatActivity {
 

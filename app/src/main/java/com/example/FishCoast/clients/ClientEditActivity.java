@@ -1,4 +1,4 @@
-package com.example.myapplication.clients;
+package com.example.FishCoast.clients;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
 
 public class ClientEditActivity extends AppCompatActivity {
 

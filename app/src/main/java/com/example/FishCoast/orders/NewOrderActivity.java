@@ -1,4 +1,4 @@
-package com.example.myapplication.orders;
+package com.example.FishCoast.orders;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +14,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
 
 
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.price;
+package com.example.FishCoast.ui.price;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -26,9 +26,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.DBHelper;
-import com.example.myapplication.R;
-import com.example.myapplication.REQUEST_CODE;
+import com.example.FishCoast.DBHelper;
+import com.example.FishCoast.R;
+import com.example.FishCoast.REQUEST_CODE;
 
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
