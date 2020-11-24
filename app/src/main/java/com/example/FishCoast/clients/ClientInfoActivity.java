@@ -13,11 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.orders.NewOrderActivity;
 import com.example.FishCoast.R;
 import com.example.FishCoast.REQUEST_CODE;
+import com.example.FishCoast.orders.NewOrderItemAdapter;
 
 public class ClientInfoActivity extends AppCompatActivity {
 
@@ -27,6 +31,7 @@ public class ClientInfoActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private Cursor c;
     private TextView clientCity, clientCompany, clientPhone, clientStreet, clientTextId;
+    private ClientInfoAdapter clientInfoAdapter;
     private int clientId;
     private int positionIndex;
 
@@ -95,6 +100,7 @@ public class ClientInfoActivity extends AppCompatActivity {
             }
         }
         initClientInfo(positionIndex);
+        clientInfoAdapter.swapCursor(getAllItems(clientId));
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -107,10 +113,23 @@ public class ClientInfoActivity extends AppCompatActivity {
         clientPhone.setText(c.getString(c.getColumnIndex("phone")));
         clientId = c.getInt(c.getColumnIndex("id"));
         clientTextId.setText("id: " + clientId);
+        c.close();
     }
 
     private void initClientInfoAdapter(int id){
+        RecyclerView clientInfoRecycler = findViewById(R.id.recyclerNewOrderItems);
+        LinearLayoutManager clientInfoLayoutManager = new LinearLayoutManager(this);
+        clientInfoRecycler.setLayoutManager(clientInfoLayoutManager);
+        clientInfoRecycler.setHasFixedSize(true);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                clientInfoRecycler.getContext(), clientInfoLayoutManager.getOrientation());
+        clientInfoRecycler.addItemDecoration(dividerItemDecoration);
+        clientInfoAdapter = new ClientInfoAdapter(getAllItems(id));
+        clientInfoRecycler.setAdapter(clientInfoAdapter);
+    }
 
+    private Cursor getAllItems(int id){
+        return db.query("orderstable", null, "clientid = " + id, null, null, null,null);
     }
 
 }
