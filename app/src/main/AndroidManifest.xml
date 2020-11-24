@@ -19,7 +19,7 @@
             android:name="com.example.FishCoast.clients.ClientInfoActivity"
             android:label="Клиент"></activity>
         <activity
-            android:name="com.example.FishCoast.ui.price.NewPositionActivity"
+            android:name="com.example.FishCoast.price.NewPositionActivity"
             android:label="@string/newposition"></activity>
         <activity
             android:name="com.example.FishCoast.clients.ClientEditActivity"

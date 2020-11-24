@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/navigation_price"
-        android:name="com.example.FishCoast.ui.price.PriceFragment"
+        android:name="com.example.FishCoast.price.PriceFragment"
         android:label="@string/title_price"
         tools:layout="@layout/fragment_price" />
 </navigation>

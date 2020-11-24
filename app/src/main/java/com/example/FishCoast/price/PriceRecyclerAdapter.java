@@ -1,4 +1,4 @@
-package com.example.FishCoast.ui.price;
+package com.example.FishCoast.price;
 
 import android.content.Context;
 import android.database.Cursor;

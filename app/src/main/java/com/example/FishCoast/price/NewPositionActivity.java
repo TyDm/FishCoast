@@ -1,4 +1,4 @@
-package com.example.FishCoast.ui.price;
+package com.example.FishCoast.price;
 
 import androidx.appcompat.widget.Toolbar;
 

@@ -1,4 +1,4 @@
-package com.example.FishCoast.ui.price;
+package com.example.FishCoast.price;
 
 import android.content.ContentValues;
 import android.content.Intent;
