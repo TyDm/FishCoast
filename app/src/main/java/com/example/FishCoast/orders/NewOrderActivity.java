@@ -140,7 +140,7 @@ public class NewOrderActivity extends AppCompatActivity {
             Date date = new Date();
             String orderDateTime = SimpleDateFormat.getDateTimeInstance().format(date);
             ContentValues cv = new ContentValues();
-            int orderid = 0;
+            int orderid = 1;
             Cursor orderCursor = db.query("orderstable", new String[] {"MAX(orderid)"}, null, null,null,null,null);
             if (orderCursor.getCount() > 0){
                 orderCursor.moveToFirst();
