@@ -33,8 +33,6 @@ public class NewOrderActivity extends AppCompatActivity {
     private Cursor c;
     private int clientId;
     private TextView clientText;
-    private RecyclerView newOrderItemListRecycler;
-    private RecyclerView newOrderPriceListRecycler;
     private NewOrderItemAdapter newOrderItemAdapter;
     private NewOrderPriceAdapter newOrderPriceAdapter;
 
@@ -51,7 +49,7 @@ public class NewOrderActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
         db = dbHelper.getWritableDatabase();
-        clientId = Integer.parseInt(getIntent().getStringExtra("clientId"));
+        clientId = getIntent().getIntExtra("clientId", 0);
         c = db.query("clientstable", null, "id = " + clientId, null, null, null, null);
         c.moveToFirst();
         getSupportActionBar().setTitle(c.getString(c.getColumnIndex("street")));
@@ -133,7 +131,7 @@ public class NewOrderActivity extends AppCompatActivity {
     }
 
     private void initPriceListRecycler() {
-        newOrderPriceListRecycler = findViewById(R.id.recyclerNewOrderPrice);
+        RecyclerView newOrderPriceListRecycler = findViewById(R.id.recyclerNewOrderPrice);
         LinearLayoutManager newOrderPriceLayoutManager = new LinearLayoutManager(this);
         newOrderPriceListRecycler.setLayoutManager(newOrderPriceLayoutManager);
         newOrderPriceListRecycler.setHasFixedSize(true);
@@ -158,7 +156,7 @@ public class NewOrderActivity extends AppCompatActivity {
     }
 
     private void initItemListRecycler() {
-        newOrderItemListRecycler = findViewById(R.id.recyclerNewOrderItems);
+        RecyclerView newOrderItemListRecycler = findViewById(R.id.recyclerNewOrderItems);
         LinearLayoutManager newOrderItemsLayoutManager = new LinearLayoutManager(this);
         newOrderItemListRecycler.setLayoutManager(newOrderItemsLayoutManager);
         newOrderItemListRecycler.setHasFixedSize(true);

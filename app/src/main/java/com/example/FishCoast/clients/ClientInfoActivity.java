@@ -27,7 +27,7 @@ public class ClientInfoActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private Cursor c;
     private TextView clientCity, clientCompany, clientPhone, clientStreet, clientTextId;
-    private String clientId;
+    private int clientId;
     private int positionIndex;
 
     @Override
@@ -41,7 +41,6 @@ public class ClientInfoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         dbHelper = new DBHelper(this);
-        cv = new ContentValues();
         db = dbHelper.getWritableDatabase();
         clientStreet = findViewById(R.id.textStreet);
         clientCompany = findViewById(R.id.textCompany);
@@ -49,21 +48,8 @@ public class ClientInfoActivity extends AppCompatActivity {
         clientCity = findViewById(R.id.textCity);
         clientTextId = findViewById(R.id.textId);
 
-
         positionIndex = getIntent().getExtras().getInt("positionIndex");
         initClientInfo(positionIndex);
-
-    }
-
-    private void initClientInfo(int positionIndex) {
-        c = db.query("clientstable", null, null, null, null, null, null);
-        c.moveToPosition(positionIndex);
-        clientStreet.setText(c.getString(c.getColumnIndex("street")));
-        clientCompany.setText(c.getString(c.getColumnIndex("company")));
-        clientCity.setText(c.getString(c.getColumnIndex("city")));
-        clientPhone.setText(c.getString(c.getColumnIndex("phone")));
-        clientTextId.setText("id: " + (c.getString(c.getColumnIndex("id"))));
-        clientId = c.getString(c.getColumnIndex("id"));
 
     }
 
@@ -111,4 +97,20 @@ public class ClientInfoActivity extends AppCompatActivity {
         initClientInfo(positionIndex);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void initClientInfo(int positionIndex) {
+        c = db.query("clientstable", null, null, null, null, null, null);
+        c.moveToPosition(positionIndex);
+        clientStreet.setText(c.getString(c.getColumnIndex("street")));
+        clientCompany.setText(c.getString(c.getColumnIndex("company")));
+        clientCity.setText(c.getString(c.getColumnIndex("city")));
+        clientPhone.setText(c.getString(c.getColumnIndex("phone")));
+        clientId = c.getInt(c.getColumnIndex("id"));
+        clientTextId.setText("id: " + clientId);
+    }
+
+    private void initClientInfoAdapter(int id){
+
+    }
+
 }
