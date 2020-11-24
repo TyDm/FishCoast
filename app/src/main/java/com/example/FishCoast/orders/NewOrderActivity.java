@@ -60,7 +60,79 @@ public class NewOrderActivity extends AppCompatActivity {
         initItemListRecycler();
     }
 
-    public void initPriceListRecycler() {
+    public void filter(String str, int editablePosition) {
+        newOrderPriceAdapter.swapCursor(db.query("pricetable", null,
+                "name" + " LIKE '%" + str + "%'" + " AND " + "type = " + c.getInt(c.getColumnIndex("price")), null, null,
+                null, null), editablePosition);
+    }
+
+    public void applyItem(String name, String cost, String unit, int editablePosition) {
+        newOrderItemAdapter.viewHolder.applyItem(name, cost, unit, editablePosition);
+    }
+
+    public void setnewOrderPriceAdapterClickable(boolean clickable){
+        newOrderPriceAdapter.setClickable(clickable);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_neworder, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_neworder_apply){
+            if (saveOrder() > 0){
+                setResult(RESULT_OK);
+            }
+            dbHelper.close();
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private int saveOrder(){
+        int itemsSavecount = 0;
+        ArrayList<OrderPositionItems> items = newOrderItemAdapter.getItems();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
+        Date date = new Date();
+        String orderDateTime = dateFormat.format(date);
+        ContentValues cv = new ContentValues();
+        int orderid = 1;
+        Cursor orderCursor = db.query("orderstable", new String[] {"MAX(orderid)"}, null, null,null,null,null);
+        if (orderCursor.getCount() > 0){
+            orderCursor.moveToFirst();
+            String max_id = orderCursor.getString(0);
+            if (max_id != null)
+                orderid = Integer.parseInt(max_id)+1;
+        }
+        orderCursor.close();
+
+        int i = 0;
+        while (i < items.size()){
+            if (!items.get(i).getName().equals("") && (items.get(i).getQuantity() > 0)) {
+                cv.put("orderid", orderid);
+                cv.put("clientid", clientId);
+                cv.put("name", items.get(i).getName());
+                cv.put("cost", items.get(i).getCost());
+                cv.put("unit", items.get(i).getUnit());
+                cv.put("quantity", items.get(i).getQuantity());
+                cv.put("datetime", orderDateTime);
+                db.insert("orderstable", null, cv);
+                itemsSavecount++;
+            }
+            i++;
+        }
+        return itemsSavecount;
+    }
+
+    private void initPriceListRecycler() {
         newOrderPriceListRecycler = findViewById(R.id.recyclerNewOrderPrice);
         LinearLayoutManager newOrderPriceLayoutManager = new LinearLayoutManager(this);
         newOrderPriceListRecycler.setLayoutManager(newOrderPriceLayoutManager);
@@ -85,7 +157,7 @@ public class NewOrderActivity extends AppCompatActivity {
 
     }
 
-    public void initItemListRecycler() {
+    private void initItemListRecycler() {
         newOrderItemListRecycler = findViewById(R.id.recyclerNewOrderItems);
         LinearLayoutManager newOrderItemsLayoutManager = new LinearLayoutManager(this);
         newOrderItemListRecycler.setLayoutManager(newOrderItemsLayoutManager);
@@ -97,81 +169,7 @@ public class NewOrderActivity extends AppCompatActivity {
         newOrderItemListRecycler.setAdapter(newOrderItemAdapter);
     }
 
-
     private Cursor getAllItems(int priceType) {
         return db.query("pricetable", null, "type = " + priceType, null, null, null, null);
-    }
-
-
-    public void filter(String str, int editablePosition) {
-        newOrderPriceAdapter.swapCursor(db.query("pricetable", null,
-                "name" + " LIKE '%" + str + "%'" + " AND " + "type = " + c.getInt(c.getColumnIndex("price")), null, null,
-                null, null), editablePosition);
-    }
-
-    public void applyItem(String name, String cost, String unit, int editablePosition) {
-
-        newOrderItemAdapter.viewHolder.applyItem(name, cost, unit, editablePosition);
-    }
-
-    public void setEditablePosition(int editablePosition) {
-        newOrderPriceAdapter.setEditablePosition(editablePosition);
-    }
-
-    public void setnewOrderPriceAdapterClickable(boolean clickable){
-        newOrderPriceAdapter.setClickable(clickable);
-    }
-
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_neworder, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_neworder_apply){
-            ArrayList<OrderPositionItems> items = newOrderItemAdapter.getItems();
-            //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
-            Date date = new Date();
-            //String orderDateTime = SimpleDateFormat.getDateTimeInstance().format(date);
-            String orderDateTime = dateFormat.format(date);
-            ContentValues cv = new ContentValues();
-            int orderid = 1;
-            Cursor orderCursor = db.query("orderstable", new String[] {"MAX(orderid)"}, null, null,null,null,null);
-            if (orderCursor.getCount() > 0){
-                orderCursor.moveToFirst();
-                String max_id = orderCursor.getString(0);
-                if (max_id != null)
-                orderid = Integer.parseInt(max_id)+1;
-            }
-            orderCursor.close();
-
-
-            int i = 0;
-            while (i < items.size()){
-                if (!items.get(i).getName().equals("") && (items.get(i).getQuantity() > 0)) {
-                    cv.put("orderid", orderid);
-                    cv.put("clientid", clientId);
-                    cv.put("name", items.get(i).getName());
-                    cv.put("cost", items.get(i).getCost());
-                    cv.put("unit", items.get(i).getUnit());
-                    cv.put("quantity", items.get(i).getQuantity());
-                    cv.put("datetime", orderDateTime);
-                    db.insert("orderstable", null, cv);
-                }
-                i++;
-            }
-            setResult(RESULT_OK);
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
