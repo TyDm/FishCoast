@@ -55,12 +55,12 @@
         android:id="@+id/textPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:inputType="phone"
         android:text="89990790172"
         android:textColor="@color/colorBlack"
         android:textSize="20sp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,6 +78,17 @@
         app:layout_constraintStart_toEndOf="@+id/textCity"
         app:layout_constraintTop_toBottomOf="@+id/textCompany" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/clientInfoRecycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPhone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
