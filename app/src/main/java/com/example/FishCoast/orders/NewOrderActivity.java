@@ -136,7 +136,7 @@ public class NewOrderActivity extends AppCompatActivity {
         newOrderPriceListRecycler = findViewById(R.id.recyclerNewOrderPrice);
         LinearLayoutManager newOrderPriceLayoutManager = new LinearLayoutManager(this);
         newOrderPriceListRecycler.setLayoutManager(newOrderPriceLayoutManager);
-        newOrderPriceListRecycler.setHasFixedSize(false);
+        newOrderPriceListRecycler.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 newOrderPriceListRecycler.getContext(), newOrderPriceLayoutManager.getOrientation());
         newOrderPriceListRecycler.addItemDecoration(dividerItemDecoration);
@@ -161,7 +161,7 @@ public class NewOrderActivity extends AppCompatActivity {
         newOrderItemListRecycler = findViewById(R.id.recyclerNewOrderItems);
         LinearLayoutManager newOrderItemsLayoutManager = new LinearLayoutManager(this);
         newOrderItemListRecycler.setLayoutManager(newOrderItemsLayoutManager);
-        newOrderItemListRecycler.setHasFixedSize(false);
+        newOrderItemListRecycler.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 newOrderItemListRecycler.getContext(), newOrderItemsLayoutManager.getOrientation());
         newOrderItemListRecycler.addItemDecoration(dividerItemDecoration);
