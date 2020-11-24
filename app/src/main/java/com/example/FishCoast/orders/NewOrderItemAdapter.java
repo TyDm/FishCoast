@@ -64,9 +64,8 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
     @Override
     public void onBindViewHolder(@NonNull NewOrderItemViewHolder holder, int position) {
             holder.nameText.setText(StringFormat.ItemName( items.get(position).getName()));
-            holder.editablePosition = holder.getAdapterPosition();
             holder.quantityText.setEnabled(false);
-            if (!items.get(position).getName().toString().equals("")) {
+            if (!items.get(position).getName().equals("")) {
 
                 if (items.get(position).getQuantity() == -1.0) {
                     holder.quantityText.setEnabled(true);
@@ -146,10 +145,9 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                 holder.nameText.requestFocus();
 
             }
-
-
-
     }
+
+
 
     @Override
     public int getItemCount()
@@ -165,7 +163,6 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
     class NewOrderItemViewHolder extends RecyclerView.ViewHolder {
         private final EditText nameText;
         private final EditText quantityText;
-        private int editablePosition;
 
         private NewOrderItemViewHolder(View itemView)
         {
@@ -176,7 +173,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
-                        newOrderActivity.filter(nameText.getText().toString(), editablePosition);
+                        newOrderActivity.filter(nameText.getText().toString(), getAdapterPosition());
                     }
                 }
             });
@@ -189,7 +186,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                         if (nameText.isFocused())
-                        newOrderActivity.filter(s.toString(), editablePosition);
+                        newOrderActivity.filter(s.toString(), getAdapterPosition());
 
                 }
 

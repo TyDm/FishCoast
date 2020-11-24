@@ -20,8 +20,10 @@ import com.example.FishCoast.R;
 
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class NewOrderActivity extends AppCompatActivity {
 
@@ -137,8 +139,10 @@ public class NewOrderActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_neworder_apply){
             ArrayList<OrderPositionItems> items = newOrderItemAdapter.getItems();
             //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
             Date date = new Date();
-            String orderDateTime = SimpleDateFormat.getDateTimeInstance().format(date);
+            //String orderDateTime = SimpleDateFormat.getDateTimeInstance().format(date);
+            String orderDateTime = dateFormat.format(date);
             ContentValues cv = new ContentValues();
             int orderid = 1;
             Cursor orderCursor = db.query("orderstable", new String[] {"MAX(orderid)"}, null, null,null,null,null);
@@ -150,7 +154,6 @@ public class NewOrderActivity extends AppCompatActivity {
             }
             orderCursor.close();
 
-            //Toast.makeText(this, "" + orderid, Toast.LENGTH_SHORT).show();*/
 
             int i = 0;
             while (i < items.size()){

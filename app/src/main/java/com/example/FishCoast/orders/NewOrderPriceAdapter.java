@@ -38,7 +38,6 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
     @Override
     public NewOrderPriceAdapter.NewOrderPriceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_neworder_price, parent, false);
         NewOrderPriceAdapter.NewOrderPriceViewHolder viewHolder = new NewOrderPriceAdapter.NewOrderPriceViewHolder(view);
@@ -54,9 +53,7 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
 
     @Override
     public int getItemCount() {
-
         return c.getCount();
-        //return items.size();
     }
 
     public void swapCursor(Cursor newCursor, int editablePosition) {
@@ -91,10 +88,6 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
                     newOrderActivity.applyItem(getPositionNameText(), getPositionCostText(),
                             getPositionUnitText(), editablePosition);
                 }
-
-
-
-
             }
         };
 
@@ -119,7 +112,7 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
             itemView.setOnClickListener(priceRecyclerListener);
         }
 
-        void bind(int position) {
+        private void bind(int position) {
 
             if (!c.moveToPosition(position)){
                 return;
