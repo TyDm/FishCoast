@@ -63,7 +63,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NewOrderItemViewHolder holder, int position) {
-            holder.nameText.setText(StringFormat.ItemName( items.get(position).getName()));
+            holder.nameText.setText(StringFormat.itemName( items.get(position).getName()));
             holder.quantityText.setEnabled(false);
             if (!items.get(position).getName().equals("")) {
 
@@ -131,7 +131,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                 }
                 else
                 {
-                    holder.quantityText.setText(StringFormat.DoubleToString(items.get(position).getQuantity(), items.get(position).getUnit()));
+                    holder.quantityText.setText(StringFormat.doubleToString(items.get(position).getQuantity(), items.get(position).getUnit()));
                 }
 
             }
@@ -201,7 +201,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         public void applyItem(String name, String cost, String unit, int position){
             items.get(position).setName(name);
             items.get(position).setCost(Double.parseDouble(cost));
-            items.get(position).setUnit(StringFormat.UnitStringtoInteger(unit));
+            items.get(position).setUnit(StringFormat.unitStringtoInteger(unit));
             items.get(position).setQuantity(-1.0);
             quantityBind = true;
             linearLayoutManager.scrollToPositionWithOffset(items.size()-1, 100);

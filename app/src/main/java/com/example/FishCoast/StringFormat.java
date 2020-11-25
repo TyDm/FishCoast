@@ -1,12 +1,13 @@
 package com.example.FishCoast;
 
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public abstract class StringFormat {
-    public static String ItemName(String name){
+    public static String itemName(String name){
         return name;
     }
-    public static String ItemQuantity(Double quantity, int unit){
+    public static String itemQuantity(Double quantity, int unit){
         String msg;
         if (quantity < 0){
             msg = "";
@@ -14,9 +15,9 @@ public abstract class StringFormat {
         else
         {
             if (quantity % 1 == 0)
-                msg = String.format(Locale.getDefault(),"%2$1.0f" , quantity);
+                msg = String.format(Locale.getDefault(),"%1$1.0f" , quantity);
             else
-                msg = String.format(Locale.getDefault(),"%2$1.1f" , quantity);
+                msg = String.format(Locale.getDefault(),"%1$1.1f" , quantity);
             if (unit == 1)
                 msg += ("шт");
             else
@@ -27,7 +28,7 @@ public abstract class StringFormat {
 
         return msg;
     }
-    public static String DoubleToString(Double d, int unit){
+    public static String doubleToString(Double d, int unit){
         String msgdouble;
         if (d % 1 == 0)
             msgdouble = String.format(Locale.getDefault(), "%1$1.0f", d);
@@ -39,11 +40,11 @@ public abstract class StringFormat {
             msgdouble+= "кг";
         return msgdouble;
     }
-    public static double StringQuantityToDouble(String quantity){
+    public static double stringQuantityToDouble(String quantity){
         return 0.0;
     }
-    public static int UnitStringtoInteger(String str){
-        if (str == "шт") return 1;
+    public static int unitStringtoInteger(String str){
+        if (str.equals("шт")) return 1;
         else return 0;
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +22,6 @@ import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.orders.NewOrderActivity;
 import com.example.FishCoast.R;
 import com.example.FishCoast.REQUEST_CODE;
-import com.example.FishCoast.orders.NewOrderItemAdapter;
 
 public class ClientInfoActivity extends AppCompatActivity {
 
@@ -55,6 +55,16 @@ public class ClientInfoActivity extends AppCompatActivity {
 
         positionIndex = getIntent().getExtras().getInt("positionIndex");
         initClientInfo(positionIndex);
+        initClientInfoAdapter(clientId);
+    }
+
+    public Cursor getSortedCursor(int id, int orderid){
+        if (orderid > 0){
+            return db.query("orderstable", null, "clientid = " + id + " AND " + "orderid = " + orderid,
+                    null,null , null,"datetime DESC");
+        }
+        else return db.query("orderstable", null, "clientid = " + id, null,null , null,"datetime DESC");
+
 
     }
 
@@ -100,7 +110,7 @@ public class ClientInfoActivity extends AppCompatActivity {
             }
         }
         initClientInfo(positionIndex);
-        clientInfoAdapter.swapCursor(getAllItems(clientId));
+        //clientInfoAdapter.swapCursor(getSortedCursor(clientId));
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -117,19 +127,15 @@ public class ClientInfoActivity extends AppCompatActivity {
     }
 
     private void initClientInfoAdapter(int id){
-        RecyclerView clientInfoRecycler = findViewById(R.id.recyclerNewOrderItems);
+        RecyclerView clientInfoRecycler = findViewById(R.id.clientInfoRecycler);
         LinearLayoutManager clientInfoLayoutManager = new LinearLayoutManager(this);
         clientInfoRecycler.setLayoutManager(clientInfoLayoutManager);
         clientInfoRecycler.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 clientInfoRecycler.getContext(), clientInfoLayoutManager.getOrientation());
         clientInfoRecycler.addItemDecoration(dividerItemDecoration);
-        clientInfoAdapter = new ClientInfoAdapter(getAllItems(id));
+        clientInfoAdapter = new ClientInfoAdapter(id, this);
         clientInfoRecycler.setAdapter(clientInfoAdapter);
-    }
-
-    private Cursor getAllItems(int id){
-        return db.query("orderstable", null, "clientid = " + id, null, null, null,null);
     }
 
 }

@@ -40,9 +40,8 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_neworder_price, parent, false);
-        NewOrderPriceAdapter.NewOrderPriceViewHolder viewHolder = new NewOrderPriceAdapter.NewOrderPriceViewHolder(view);
 
-        return viewHolder;
+        return new NewOrderPriceViewHolder(view);
     }
 
     @Override

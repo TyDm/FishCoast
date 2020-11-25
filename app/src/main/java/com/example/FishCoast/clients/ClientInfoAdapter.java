@@ -13,6 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
+import com.example.FishCoast.StringFormat;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 
 class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInfoViewHolder> {
@@ -20,9 +28,16 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
     private Cursor c;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
+    private ArrayList<Integer> idList;
+    private final int clientID;
+    private ClientInfoActivity clientInfoActivity;
 
-    public ClientInfoAdapter(Cursor c) {
-        this.c = c;
+    public ClientInfoAdapter(int id, ClientInfoActivity activity) {
+        c = activity.getSortedCursor(id, 0);
+        clientID = id;
+        clientInfoActivity = activity;
+        idList = new ArrayList<>(getidList(c));
+        //
     }
 
     @NonNull
@@ -30,19 +45,39 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
     public ClientInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_clientinfo_list, parent, false);
-        ClientInfoViewHolder viewHolder = new ClientInfoViewHolder(view);
-        return viewHolder;
+        return new ClientInfoViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ClientInfoViewHolder holder, int position) {
+        Cursor bindCursor;
+        bindCursor = clientInfoActivity.getSortedCursor(clientID, idList.get(position));
+        StringBuilder str = new StringBuilder();
+        while (bindCursor.moveToNext()){
 
+            str.append(bindCursor.getString(bindCursor.getColumnIndex("name")));
+            str.append("  ");
+            str.append(StringFormat.itemQuantity(bindCursor.getDouble(bindCursor.getColumnIndex("quantity")),
+                    bindCursor.getInt(bindCursor.getColumnIndex("unit"))));
+            str.append("\n");
+        }
+        holder.listItemsText.setText(str.toString());
+
+        bindCursor.moveToFirst();
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat(clientInfoActivity.getString(R.string.dateTimeFormat), Locale.getDefault());
+        try {
+            holder.dateText.setText(SimpleDateFormat.getDateInstance().format(dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")))));
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+            holder.dateText.setText("");
+        }
+        bindCursor.close();
     }
 
     @Override
     public int getItemCount() {
-        //c = db.query("orderstable", null, "SELECT orderid,COUNT(orderid)", null, "orderid", null, null);
-        return c.getCount();
+        return idList.size();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -51,8 +86,26 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
         }
         c = newCursor;
         if (newCursor != null){
+            idList = getidList(newCursor);
             notifyDataSetChanged();
         }
+    }
+
+    private ArrayList<Integer> getidList(Cursor cursor){
+        int i;
+        int id;
+        ArrayList<Integer> list = new ArrayList<>();
+        if (cursor.getCount() <= 0) return list;
+        cursor.moveToFirst();
+        id = cursor.getInt(cursor.getColumnIndex("orderid"));
+        list.add(id);
+        while (cursor.moveToNext()) {
+            if (id != cursor.getInt(cursor.getColumnIndex("orderid"))){
+                id = cursor.getInt(cursor.getColumnIndex("orderid"));
+                list.add(id);
+            }
+        }
+        return list;
     }
 
     class ClientInfoViewHolder extends RecyclerView.ViewHolder{
