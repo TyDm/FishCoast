@@ -67,7 +67,7 @@ public class NewOrderActivity extends AppCompatActivity {
     }
 
     public void applyItem(String name, String cost, String unit, int editablePosition) {
-        newOrderItemAdapter.viewHolder.applyItem(name, cost, unit, editablePosition);
+        newOrderItemAdapter.applyItem(name, cost, unit, editablePosition);
     }
 
     public void setnewOrderPriceAdapterClickable(boolean clickable){

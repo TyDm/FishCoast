@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,12 +16,11 @@ import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
 import com.example.FishCoast.StringFormat;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 
 class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInfoViewHolder> {
@@ -30,15 +28,17 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
     private Cursor c;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
-    private ArrayList<Integer> idList;
+    private ArrayList<Integer> orderIdList;
+    private String[] orderTextList;
     private final int clientID;
-    private ClientInfoActivity clientInfoActivity;
+    private final ClientInfoActivity clientInfoActivity;
 
     public ClientInfoAdapter(int id, ClientInfoActivity activity) {
         c = activity.getSortedCursor(id, 0);
         clientID = id;
         clientInfoActivity = activity;
-        idList = new ArrayList<>(getidList(c));
+        orderIdList = new ArrayList<>(getidList(c));
+        orderTextList = new String[orderIdList.size()];
         //
     }
 
@@ -53,7 +53,7 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
     @Override
     public void onBindViewHolder(@NonNull ClientInfoViewHolder holder, int position) {
         Cursor bindCursor;
-        bindCursor = clientInfoActivity.getSortedCursor(clientID, idList.get(position));
+        bindCursor = clientInfoActivity.getSortedCursor(clientID, orderIdList.get(position));
         StringBuilder str = new StringBuilder();
         while (bindCursor.moveToNext()){
 
@@ -64,18 +64,17 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
             str.append("\n");
         }
         holder.listItemsText.setText(str.toString());
+        orderTextList[position] = str.toString();
 
         bindCursor.moveToFirst();
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat(clientInfoActivity.getString(R.string.dateTimeFormat), Locale.getDefault());
         try {
-            holder.dateText.setText(SimpleDateFormat.getDateInstance().format(dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")))));
+            holder.dateText.setText(SimpleDateFormat.getDateInstance().format(Objects.requireNonNull(dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime"))))));
         }
         catch (ParseException e){
             e.printStackTrace();
             holder.dateText.setText("");
         }
-
-        holder.orderid = bindCursor.getInt(c.getColumnIndex("orderid"));
 
         bindCursor.close();
 
@@ -83,7 +82,7 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
 
     @Override
     public int getItemCount() {
-        return idList.size();
+        return orderIdList.size();
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -92,13 +91,17 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
         }
         c = newCursor;
         if (newCursor != null){
-            idList = getidList(newCursor);
+            orderIdList = getidList(newCursor);
+            orderTextList = new String[orderIdList.size()];
             notifyDataSetChanged();
         }
     }
 
     public int getOrderid(int position){
-        return idList.get(position);
+        return orderIdList.get(position);
+    }
+
+    public String getOrderText(int position) { return orderTextList[position];
     }
 
     private ArrayList<Integer> getidList(Cursor cursor){
@@ -122,10 +125,10 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
 
         private EditText listItemsText;
         private TextView dateText;
-        private int orderid;
 
-        public EditText getListItemsText() {
-            return listItemsText;
+        public String getListItemsText()
+        {
+            return listItemsText.getText().toString();
         }
 
         public ClientInfoViewHolder(@NonNull View itemView) {
@@ -141,6 +144,11 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
                 }
 
             });
+
+
         }
+
+
+
     }
 }

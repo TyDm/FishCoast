@@ -1,5 +1,7 @@
 package com.example.FishCoast.clients;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,6 +25,8 @@ import com.example.FishCoast.orders.NewOrderActivity;
 import com.example.FishCoast.R;
 import com.example.FishCoast.REQUEST_CODE;
 
+import java.util.Objects;
+
 public class ClientInfoActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
@@ -32,6 +36,7 @@ public class ClientInfoActivity extends AppCompatActivity {
     private Cursor c;
     private TextView clientCity, clientCompany, clientPhone, clientStreet, clientTextId;
     private ClientInfoAdapter clientInfoAdapter;
+    private RecyclerView clientInfoRecycler;
     private int clientId;
     private int positionIndex;
 
@@ -66,6 +71,10 @@ public class ClientInfoActivity extends AppCompatActivity {
         else return db.query("orderstable", null, "clientid = " + id, null,null , null,"datetime DESC");
 
 
+    }
+
+    public Cursor getSortedCursor(int id){
+        return db.query("orderstable", null, "clientid = " + id, null,null , null,"datetime DESC");
     }
 
     @Override
@@ -106,7 +115,10 @@ public class ClientInfoActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == 1){
-
+            ClipData clipData = ClipData.newPlainText("text", clientInfoAdapter.getOrderText(item.getGroupId()));
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            Objects.requireNonNull(clipboardManager).setPrimaryClip(clipData);
+            Toast.makeText(this, "Скопировано в буфер обмена", Toast.LENGTH_SHORT).show();
         }
         if (item.getItemId() == 2){
             Intent newOrderintent = new Intent(this, NewOrderActivity.class);
@@ -116,7 +128,8 @@ public class ClientInfoActivity extends AppCompatActivity {
             startActivityForResult(newOrderintent, REQUEST_CODE.EDITORDER);
         }
         if (item.getItemId() == 3){
-
+            db.delete("orderstable", "orderid = " + clientInfoAdapter.getOrderid(item.getGroupId()), null);
+            clientInfoAdapter.swapCursor(getSortedCursor(clientId));
         }
         return super.onContextItemSelected(item);
     }
@@ -129,7 +142,7 @@ public class ClientInfoActivity extends AppCompatActivity {
             }
         }
         initClientInfo(positionIndex);
-        clientInfoAdapter.swapCursor(getSortedCursor(clientId, 0));
+        clientInfoAdapter.swapCursor(getSortedCursor(clientId));
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -146,7 +159,7 @@ public class ClientInfoActivity extends AppCompatActivity {
     }
 
     private void initClientInfoAdapter(int id){
-        RecyclerView clientInfoRecycler = findViewById(R.id.clientInfoRecycler);
+        clientInfoRecycler = findViewById(R.id.clientInfoRecycler);
         LinearLayoutManager clientInfoLayoutManager = new LinearLayoutManager(this);
         clientInfoRecycler.setLayoutManager(clientInfoLayoutManager);
         clientInfoRecycler.setHasFixedSize(true);

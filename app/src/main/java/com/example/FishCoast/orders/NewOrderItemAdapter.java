@@ -1,9 +1,6 @@
 package com.example.FishCoast.orders;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
 import com.example.FishCoast.StringFormat;
 
@@ -32,15 +28,8 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
     private final NewOrderActivity newOrderActivity;
     private ArrayList<OrderPositionItems> items = new ArrayList<>();
     private ArrayList<OrderPositionItems> lastItems;
-    private SQLiteDatabase db;
-    private Cursor c;
-    private DBHelper dbHelper;
-    private ContentValues cv;
     private Boolean quantityBind = false;
     private LinearLayoutManager linearLayoutManager;
-    protected NewOrderItemViewHolder viewHolder;
-
-
 
 
     public NewOrderItemAdapter(Context context, NewOrderActivity newOrderActivity, LinearLayoutManager linearLayoutManager) {
@@ -69,8 +58,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
     public NewOrderItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_neworder_item, parent, false);
-        viewHolder = new NewOrderItemViewHolder(view);
-        return viewHolder;
+        return new NewOrderItemViewHolder(view);
     }
 
     @Override
@@ -175,6 +163,16 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         return lastItems;
     }
 
+    public void applyItem(String name, String cost, String unit, int position){
+        items.get(position).setName(name);
+        items.get(position).setCost(Double.parseDouble(cost));
+        items.get(position).setUnit(StringFormat.unitStringtoInteger(unit));
+        items.get(position).setQuantity(-1.0);
+        quantityBind = true;
+        linearLayoutManager.scrollToPositionWithOffset(items.size()-1, 100);
+        notifyDataSetChanged();
+    }
+
     class NewOrderItemViewHolder extends RecyclerView.ViewHolder {
         private final EditText nameText;
         private final EditText quantityText;
@@ -211,16 +209,6 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                 }
             });
 
-        }
-
-        public void applyItem(String name, String cost, String unit, int position){
-            items.get(position).setName(name);
-            items.get(position).setCost(Double.parseDouble(cost));
-            items.get(position).setUnit(StringFormat.unitStringtoInteger(unit));
-            items.get(position).setQuantity(-1.0);
-            quantityBind = true;
-            linearLayoutManager.scrollToPositionWithOffset(items.size()-1, 100);
-            notifyDataSetChanged();
         }
 
     }
