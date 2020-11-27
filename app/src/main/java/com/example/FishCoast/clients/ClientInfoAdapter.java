@@ -2,10 +2,12 @@ package com.example.FishCoast.clients;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -72,7 +74,11 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
             e.printStackTrace();
             holder.dateText.setText("");
         }
+
+        holder.orderid = bindCursor.getInt(c.getColumnIndex("orderid"));
+
         bindCursor.close();
+
     }
 
     @Override
@@ -89,6 +95,10 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
             idList = getidList(newCursor);
             notifyDataSetChanged();
         }
+    }
+
+    public int getOrderid(int position){
+        return idList.get(position);
     }
 
     private ArrayList<Integer> getidList(Cursor cursor){
@@ -112,11 +122,25 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
 
         private EditText listItemsText;
         private TextView dateText;
+        private int orderid;
+
+        public EditText getListItemsText() {
+            return listItemsText;
+        }
 
         public ClientInfoViewHolder(@NonNull View itemView) {
             super(itemView);
             listItemsText = itemView.findViewById(R.id.itemClientInfoText);
             dateText = itemView.findViewById(R.id.itemClientInfoDate);
+            itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                    menu.add(getAdapterPosition(), 1, 0, "Копировать");
+                    menu.add(getAdapterPosition(), 2, 0, "Редактировать");
+                    menu.add(getAdapterPosition(), 3, 0, "Удалить");
+                }
+
+            });
         }
     }
 }

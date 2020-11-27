@@ -32,6 +32,7 @@ public class NewOrderActivity extends AppCompatActivity {
     private SQLiteDatabase db;
     private Cursor c;
     private int clientId;
+    private int isEdit;
     private TextView clientText;
     private NewOrderItemAdapter newOrderItemAdapter;
     private NewOrderPriceAdapter newOrderPriceAdapter;
@@ -50,6 +51,7 @@ public class NewOrderActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
         db = dbHelper.getWritableDatabase();
         clientId = getIntent().getIntExtra("clientId", 0);
+        isEdit = getIntent().getIntExtra("isEdit", 0);
         c = db.query("clientstable", null, "id = " + clientId, null, null, null, null);
         c.moveToFirst();
         getSupportActionBar().setTitle(c.getString(c.getColumnIndex("street")));
@@ -97,21 +99,36 @@ public class NewOrderActivity extends AppCompatActivity {
 
     private int saveOrder(){
         int itemsSavecount = 0;
-        ArrayList<OrderPositionItems> items = newOrderItemAdapter.getItems();
-        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
-        Date date = new Date();
-        String orderDateTime = dateFormat.format(date);
-        ContentValues cv = new ContentValues();
-        int orderid = 1;
-        Cursor orderCursor = db.query("orderstable", new String[] {"MAX(orderid)"}, null, null,null,null,null);
-        if (orderCursor.getCount() > 0){
-            orderCursor.moveToFirst();
-            String max_id = orderCursor.getString(0);
-            if (max_id != null)
-                orderid = Integer.parseInt(max_id)+1;
+        if (newOrderItemAdapter.getItems().equals(newOrderItemAdapter.getLastItems()) ){
+            return itemsSavecount;
         }
-        orderCursor.close();
-
+        ArrayList<OrderPositionItems> items = newOrderItemAdapter.getItems();
+        String orderDateTime;
+        int orderid;
+        if (isEdit == 1){
+            orderid = getIntent().getIntExtra("orderid", 0);
+            Cursor cursor = db.query("orderstable", null, "orderid = " + orderid, null, null, null, null);
+            cursor.moveToFirst();
+            orderDateTime = cursor.getString(cursor.getColumnIndex("datetime"));
+            db.delete("orderstable", "orderid = " + orderid, null);
+            cursor.close();
+        }
+        else
+        {
+            orderid = 1;
+            Cursor orderCursor = db.query("orderstable", new String[] {"MAX(orderid)"}, null, null,null,null,null);
+            if (orderCursor.getCount() > 0){
+                orderCursor.moveToFirst();
+                String max_id = orderCursor.getString(0);
+                if (max_id != null)
+                    orderid = Integer.parseInt(max_id)+1;
+            }
+            orderCursor.close();
+            SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
+            Date date = new Date();
+            orderDateTime = dateFormat.format(date);
+        }
+        ContentValues cv = new ContentValues();
         int i = 0;
         while (i < items.size()){
             if (!items.get(i).getName().equals("") && (items.get(i).getQuantity() > 0)) {
@@ -163,7 +180,28 @@ public class NewOrderActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 newOrderItemListRecycler.getContext(), newOrderItemsLayoutManager.getOrientation());
         newOrderItemListRecycler.addItemDecoration(dividerItemDecoration);
-        newOrderItemAdapter = new NewOrderItemAdapter(this, this, newOrderItemsLayoutManager);
+        if (isEdit == 0){
+            newOrderItemAdapter = new NewOrderItemAdapter(this, this, newOrderItemsLayoutManager);
+        }
+        else
+        {
+            int orderid = getIntent().getIntExtra("orderid", 0);
+            if (orderid > 0){
+                ArrayList<OrderPositionItems> items = new ArrayList<>();
+                OrderPositionItems item;
+                Cursor cursor = db.query("orderstable", null, "orderid = " + orderid, null, null, null, null);
+                while (cursor.moveToNext()){
+                    item = new OrderPositionItems(cursor.getString(cursor.getColumnIndex("name")), cursor.getDouble(cursor.getColumnIndex("cost")),
+                            cursor.getInt(cursor.getColumnIndex("unit")), cursor.getDouble(cursor.getColumnIndex("quantity")));
+                    items.add(item);
+                }
+                cursor.close();
+                newOrderItemAdapter = new NewOrderItemAdapter(this, this, newOrderItemsLayoutManager, items);
+
+            }
+            else newOrderItemAdapter = new NewOrderItemAdapter(this, this, newOrderItemsLayoutManager);
+        }
+
         newOrderItemListRecycler.setAdapter(newOrderItemAdapter);
     }
 

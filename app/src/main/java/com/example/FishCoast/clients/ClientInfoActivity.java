@@ -96,10 +96,29 @@ public class ClientInfoActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_client_add) {
             Intent newOrderintent = new Intent(this, NewOrderActivity.class);
             newOrderintent.putExtra("clientId", clientId);
+            newOrderintent.putExtra("isEdit", 0);
             startActivityForResult(newOrderintent, REQUEST_CODE.NEWORDER);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == 1){
+
+        }
+        if (item.getItemId() == 2){
+            Intent newOrderintent = new Intent(this, NewOrderActivity.class);
+            newOrderintent.putExtra("clientId", clientId);
+            newOrderintent.putExtra("isEdit", 1);
+            newOrderintent.putExtra("orderid", clientInfoAdapter.getOrderid(item.getGroupId()));
+            startActivityForResult(newOrderintent, REQUEST_CODE.EDITORDER);
+        }
+        if (item.getItemId() == 3){
+
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -110,7 +129,7 @@ public class ClientInfoActivity extends AppCompatActivity {
             }
         }
         initClientInfo(positionIndex);
-        //clientInfoAdapter.swapCursor(getSortedCursor(clientId));
+        clientInfoAdapter.swapCursor(getSortedCursor(clientId, 0));
         super.onActivityResult(requestCode, resultCode, data);
     }
 

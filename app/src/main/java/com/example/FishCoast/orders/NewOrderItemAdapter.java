@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
     private final Context context;
     private final NewOrderActivity newOrderActivity;
     private ArrayList<OrderPositionItems> items = new ArrayList<>();
+    private ArrayList<OrderPositionItems> lastItems;
     private SQLiteDatabase db;
     private Cursor c;
     private DBHelper dbHelper;
@@ -47,7 +49,17 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         this.linearLayoutManager = linearLayoutManager;
         OrderPositionItems item = new OrderPositionItems("", 0.0, 0, -1.0);
         items.add(item);
+    }
 
+    public NewOrderItemAdapter(Context context, NewOrderActivity newOrderActivity, LinearLayoutManager linearLayoutManager, ArrayList<OrderPositionItems> list) {
+        this.context = context;
+        this.newOrderActivity = newOrderActivity;
+        this.linearLayoutManager = linearLayoutManager;
+        items = list;
+        OrderPositionItems item = new OrderPositionItems("", 0.0, 0, -1.0);
+        items.add(item);
+        Log.d("Taggg", "Создан");
+        lastItems = new ArrayList<>(items);
     }
 
 
@@ -159,6 +171,9 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         return items;
     }
 
+    public ArrayList<OrderPositionItems> getLastItems() {
+        return lastItems;
+    }
 
     class NewOrderItemViewHolder extends RecyclerView.ViewHolder {
         private final EditText nameText;
