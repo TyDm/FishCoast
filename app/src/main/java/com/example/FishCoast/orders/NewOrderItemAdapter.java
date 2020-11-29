@@ -49,6 +49,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         items.add(item);
         Log.d("Taggg", "Создан");
         lastItems = new ArrayList<>(items);
+        this.linearLayoutManager.scrollToPosition(items.size()-1);
     }
 
 
