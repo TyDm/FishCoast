@@ -99,8 +99,17 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                                 try{
                                     double d;
                                     d = (Double.parseDouble(s));
-                                    if (d <= 0){
+                                    if (d < 0){
                                         Toast.makeText(context, "Введите корректное значение", Toast.LENGTH_SHORT).show();
+                                        return true;
+                                    }
+                                    if (d == 0){
+                                        items.get(position).setName("");
+                                        items.get(position).setCost(0.0);
+                                        items.get(position).setUnit(0);
+                                        items.get(position).setQuantity(-1.0);
+                                        quantityBind = false;
+                                        notifyDataSetChanged();
                                         return true;
                                     }
                                     if (((items.get(position).getUnit() == 1) || (!holder.quantityText.getText().toString().equals(s))) && (d % 1 != 0)) {
