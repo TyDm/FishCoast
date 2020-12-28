@@ -104,10 +104,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                                         return true;
                                     }
                                     if (d == 0){
-                                        items.get(position).setName("");
-                                        items.get(position).setCost(0.0);
-                                        items.get(position).setUnit(0);
-                                        items.get(position).setQuantity(-1.0);
+                                        items.remove(position);
                                         quantityBind = false;
                                         notifyDataSetChanged();
                                         return true;
