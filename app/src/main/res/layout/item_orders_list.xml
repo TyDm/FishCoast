@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/itemOrdersText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/transparent"
+        android:focusable="false"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:text="Минтай соломка 1кг \nАрахис жс 2кг \nФисташки 2кг"
+        android:textColor="@color/colorBlack"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toStartOf="@+id/itemOrdersCost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemOrdersClient"
+        tools:ignore="LabelFor">
+
+    </EditText>
+
+    <EditText
+        android:id="@+id/itemOrdersCost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:background="@android:color/transparent"
+        android:focusable="false"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:textColor="@android:color/tab_indicator_text"
+        android:text="815\n620\n215,5"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemOrdersDate">
+
+    </EditText>
+
+    <TextView
+        android:id="@+id/itemOrdersDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="13 янв. 2021г"
+        android:textSize="13sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/itemOrdersClient"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/itemOrdersValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="1420,5р"
+        android:textSize="13sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/itemOrdersClient"
+        app:layout_constraintStart_toEndOf="@+id/itemOrdersClient">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/itemOrdersClient"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Ногина 7, ИП Маркова"
+        android:textColor="@color/colorBlack"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </TextView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

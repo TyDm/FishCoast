@@ -12,19 +12,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.FishCoast.R;
 
 public class OrdersFragment extends Fragment {
 
     private OrdersViewModel ordersViewModel;
+    private View root;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         ordersViewModel =
                 ViewModelProviders.of(this).get(OrdersViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_orders, container, false);
+        root = inflater.inflate(R.layout.fragment_orders, container, false);
        /* final TextView textView = root.findViewById(R.id.text_orders);
         ordersViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -38,7 +42,7 @@ public class OrdersFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
-
+        initOrdersListRecycler();
 
         return root;
     }
@@ -63,4 +67,17 @@ public class OrdersFragment extends Fragment {
         menu.findItem(R.id.action_import).setVisible(false);
 
     }
+
+    private void initOrdersListRecycler(){
+        RecyclerView ordersRecycler = root.findViewById(R.id.recyclerOrders);
+        LinearLayoutManager ordersLayoutManager = new LinearLayoutManager(getContext());
+        ordersRecycler.setLayoutManager(ordersLayoutManager);
+        ordersRecycler.setHasFixedSize(true);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(ordersRecycler.getContext(), ordersLayoutManager.getOrientation());
+        ordersRecycler.addItemDecoration(dividerItemDecoration);
+        OrdersAdapter ordersAdapter = new OrdersAdapter(getContext());
+        ordersRecycler.setAdapter(ordersAdapter);
+
+    }
+
 }

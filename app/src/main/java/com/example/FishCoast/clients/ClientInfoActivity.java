@@ -98,7 +98,10 @@ public class ClientInfoActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.action_client_delete) {
 
+
+
             db.delete("clientstable", "id = " + clientId, null);
+            db.delete("orderstable", "clientid = " + clientId, null);
             dbHelper.close();
             finish();
         }
@@ -145,6 +148,7 @@ public class ClientInfoActivity extends AppCompatActivity {
         clientInfoAdapter.swapCursor(getSortedCursor(clientId));
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
     private void initClientInfo(int positionIndex) {
         c = db.query("clientstable", null, null, null, null, null, null);

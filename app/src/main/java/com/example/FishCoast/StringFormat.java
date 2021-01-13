@@ -20,7 +20,7 @@ public abstract class StringFormat {
                 msgdouble = String.format(Locale.getDefault(), "%1$1.1f", d);
             if (unit == 1)
                 msgdouble+= "шт";
-            else
+            if (unit == 0)
                 msgdouble+= "кг";
         }
 
