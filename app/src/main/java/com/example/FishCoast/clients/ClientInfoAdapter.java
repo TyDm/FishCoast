@@ -59,7 +59,7 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
 
             str.append(bindCursor.getString(bindCursor.getColumnIndex("name")));
             str.append("  ");
-            str.append(StringFormat.itemQuantity(bindCursor.getDouble(bindCursor.getColumnIndex("quantity")),
+            str.append(StringFormat.doubleToString(bindCursor.getDouble(bindCursor.getColumnIndex("quantity")),
                     bindCursor.getInt(bindCursor.getColumnIndex("unit"))));
             str.append("\n");
         }

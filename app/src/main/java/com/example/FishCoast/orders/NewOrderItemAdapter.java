@@ -36,8 +36,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         this.context = context;
         this.newOrderActivity = newOrderActivity;
         this.linearLayoutManager = linearLayoutManager;
-        OrderPositionItems item = new OrderPositionItems("", 0.0, 0, -1.0);
-        items.add(item);
+        addNullableItem();
     }
 
     public NewOrderItemAdapter(Context context, NewOrderActivity newOrderActivity, LinearLayoutManager linearLayoutManager, ArrayList<OrderPositionItems> list) {
@@ -45,8 +44,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         this.newOrderActivity = newOrderActivity;
         this.linearLayoutManager = linearLayoutManager;
         items = list;
-        OrderPositionItems item = new OrderPositionItems("", 0.0, 0, -1.0);
-        items.add(item);
+        addNullableItem();
         Log.d("Taggg", "Создан");
         lastItems = new ArrayList<>(items);
         this.linearLayoutManager.scrollToPosition(items.size()-1);
@@ -71,6 +69,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                 if (items.get(position).getQuantity() == -1.0) {
                     holder.quantityText.setEnabled(true);
                     holder.quantityText.setText("");
+                    holder.quantityText.setHint(StringFormat.unitIntegerToString(items.get(position).getUnit()));
                     quantityBind = true;
                     holder.quantityText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                         @Override
@@ -104,6 +103,9 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                                         return true;
                                     }
                                     if (d == 0){
+                                        if (position == (items.size()-1)) {
+                                            addNullableItem();
+                                        }
                                         items.remove(position);
                                         quantityBind = false;
                                         notifyDataSetChanged();
@@ -118,8 +120,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                                         items.get(position).setUnit(1);
                                     }
                                     if (!items.get(items.size()-1).getName().equals("")){
-                                        OrderPositionItems item = new OrderPositionItems("", 0.0, 0, -1.0);
-                                        items.add(item);
+                                        addNullableItem();
                                     }
                                     quantityBind = false;
                                     linearLayoutManager.scrollToPosition(items.size()-1);
@@ -145,6 +146,7 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
             else
             {
                 holder.quantityText.setText("");
+                holder.quantityText.setHint("");
             }
 
             if ((!quantityBind) && ((holder.getAdapterPosition() + 1) == items.size())) {
@@ -178,6 +180,12 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
         quantityBind = true;
         linearLayoutManager.scrollToPositionWithOffset(items.size()-1, 100);
         notifyDataSetChanged();
+    }
+
+    private int addNullableItem(){
+        OrderPositionItems item = new OrderPositionItems("", 0.0, 0, -1.0);
+        items.add(item);
+        return items.size()-1;
     }
 
     class NewOrderItemViewHolder extends RecyclerView.ViewHolder {
