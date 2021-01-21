@@ -117,8 +117,9 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int orderID = clientInfoAdapter.getOrderid(clientInfoAdapter.getClickableID());
         if (item.getItemId() == 1){
-            ClipData clipData = ClipData.newPlainText("text", clientInfoAdapter.getOrderText(item.getGroupId()));
+            ClipData clipData = ClipData.newPlainText("text", clientInfoAdapter.getOrderText(clientInfoAdapter.getClickableID()));
             ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             Objects.requireNonNull(clipboardManager).setPrimaryClip(clipData);
             Toast.makeText(this, "Скопировано в буфер обмена", Toast.LENGTH_SHORT).show();
@@ -127,11 +128,11 @@ public class ClientInfoActivity extends AppCompatActivity {
             Intent newOrderintent = new Intent(this, NewOrderActivity.class);
             newOrderintent.putExtra("clientId", clientId);
             newOrderintent.putExtra("isEdit", 1);
-            newOrderintent.putExtra("orderid", clientInfoAdapter.getOrderid(item.getGroupId()));
+            newOrderintent.putExtra("orderid", orderID);
             startActivityForResult(newOrderintent, REQUEST_CODE.EDITORDER);
         }
         if (item.getItemId() == 3){
-            db.delete("orderstable", "orderid = " + clientInfoAdapter.getOrderid(item.getGroupId()), null);
+            db.delete("orderstable", "orderid = " + orderID, null);
             clientInfoAdapter.swapCursor(getSortedCursor(clientId));
         }
         return super.onContextItemSelected(item);

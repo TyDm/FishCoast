@@ -30,6 +30,8 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
     private SQLiteDatabase db;
     private ArrayList<Integer> orderIdList;
     private String[] orderTextList;
+    private int clickableID;
+
     private final int clientID;
     private final ClientInfoActivity clientInfoActivity;
 
@@ -78,6 +80,14 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
 
         bindCursor.close();
 
+    }
+
+    public int getClickableID() {
+        return clickableID;
+    }
+
+    public void setClickableID(int clickableID) {
+        this.clickableID = clickableID;
     }
 
     @Override
@@ -138,9 +148,10 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
             itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 @Override
                 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                    menu.add(getAdapterPosition(), 1, 0, "Копировать");
-                    menu.add(getAdapterPosition(), 2, 0, "Редактировать");
-                    menu.add(getAdapterPosition(), 3, 0, "Удалить");
+                    setClickableID(getAdapterPosition());
+                    menu.add(0, 1, 0, "Копировать");
+                    menu.add(0, 2, 0, "Редактировать");
+                    menu.add(0, 3, 0, "Удалить");
                 }
 
             });

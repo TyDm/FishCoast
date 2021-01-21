@@ -3,6 +3,7 @@ package com.example.FishCoast.orders;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,10 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
     private SQLiteDatabase db;
     private String[] orderTextList;
     private ArrayList<Integer> orderIdList;
+    private int clickableID;
+    private String clickableText;
+
+
 
     public OrdersAdapter(Context context){
         this.context = context;
@@ -38,6 +43,38 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         cursor = db.query("orderstable", null, null, null,null , null,"datetime DESC");
         orderIdList = getidList(cursor);
         orderTextList = new String[orderIdList.size()];
+    }
+
+    public String getClickableText() {
+        return clickableText;
+    }
+
+    public void setClickableText(String clickableText) {
+        this.clickableText = clickableText;
+    }
+
+    public int getClickableID() {
+        return clickableID;
+    }
+
+    public void setClickableID(int clickableID) {
+        this.clickableID = clickableID;
+    }
+
+    public int getOrderID(int position){
+        return orderIdList.get(position);
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        if (cursor != null){
+            cursor.close();
+        }
+        cursor = newCursor;
+        if (newCursor != null){
+            orderIdList = getidList(newCursor);
+            //orderTextList = new String[orderIdList.size()];
+            notifyDataSetChanged();
+        }
     }
 
     @NonNull
@@ -127,11 +164,16 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
             order = itemView.findViewById(R.id.itemOrdersText);
             cost = itemView.findViewById(R.id.itemOrdersCost);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 @Override
-                public void onClick(View v) {
-                    Toast.makeText(context, "id", Toast.LENGTH_SHORT).show();
+                public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                    setClickableID(getAdapterPosition());
+                    setClickableText(client.getText().toString() + "\n" + order.getText().toString());
+                    menu.add(1, 1, 0, "Копировать");
+                    menu.add(1, 2, 0, "Редактировать");
+                    menu.add(1, 3, 0, "Удалить");
                 }
+
             });
         }
     }
