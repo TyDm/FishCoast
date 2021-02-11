@@ -2,14 +2,23 @@ package com.example.FishCoast.orders;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.FishCoast.R;
+import com.example.FishCoast.StringFormat;
+
+import java.util.ArrayList;
 
 class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.NewOrderPriceViewHolder> {
     private Context context;
@@ -17,12 +26,14 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
     private NewOrderActivity newOrderActivity;
     private int editablePosition;
     private Boolean isClickable = true;
+    private String searchText = "";
+    private ArrayList<Integer> favoritePositions;
 
-    public NewOrderPriceAdapter(Context context, Cursor cursor, NewOrderActivity newOrderActivity ){
-
+    public NewOrderPriceAdapter(Context context, Cursor cursor, NewOrderActivity newOrderActivity, ArrayList<Integer> favoritePositions ){
         this.context = context;
         c = cursor;
         this.newOrderActivity = newOrderActivity;
+        this.favoritePositions = favoritePositions;
 
     }
 
@@ -55,11 +66,12 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
         return c.getCount();
     }
 
-    public void swapCursor(Cursor newCursor, int editablePosition) {
+    public void swapCursor(Cursor newCursor, int editablePosition, String str) {
         if (c != null){
             c.close();
         }
         c = newCursor;
+        searchText = str;
         if (newCursor != null){
             isClickable = true;
             this.editablePosition = editablePosition;
@@ -116,17 +128,16 @@ class NewOrderPriceAdapter extends RecyclerView.Adapter<NewOrderPriceAdapter.New
             if (!c.moveToPosition(position)){
                 return;
             }
-
-            this.positionName.setText(c.getString(c.getColumnIndex("name")));
+            this.positionName.setText(StringFormat.setSearchSpan(c.getString(c.getColumnIndex("name")), searchText,
+                    newOrderActivity.getResources().getColor(R.color.colorAccent)));
             this.positionCost.setText(c.getString(c.getColumnIndex("cost")));
             if (c.getInt(c.getColumnIndex("unit")) == 0) this.positionUnit.setText("кг");
             else this.positionUnit.setText("шт");
-           //this.positionName.setText(items.get(position).getName());
-          // this.positionCost.setText(StringFormat.DoubleToString(items.get(position).getCost()));
-         //  if (items.get(position).getUnit() == 0) this.positionUnit.setText("кг");
-          // else this.positionUnit.setText("шт");
 
-
+            if (favoritePositions.contains(c.getInt(c.getColumnIndex("id"))))
+                itemView.setBackgroundColor(newOrderActivity.getResources().getColor(R.color.priceBackgroundFavorite));
+            else
+                itemView.setBackgroundColor(Color.TRANSPARENT);
 
         }
 

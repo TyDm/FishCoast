@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,35 +51,26 @@ public class ClientsFragment extends Fragment {
         //---------------------------------------------------------------------------------
         setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
-
-
         initClientsListRecycler();
-
         сontext = this;
-
         return root;
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        if (getActivity().findViewById(R.id.pricespinner) != null)
+            getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
+
+        if (menu.findItem(R.id.action_import) != null)
+            menu.findItem(R.id.action_import).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public static void startClientInfoActivity(int positionIndex) {
         Intent intent = new Intent(сontext.getContext(), ClientInfoActivity.class);
         intent.putExtra("positionIndex", positionIndex);
         сontext.startActivityForResult(intent, REQUEST_CODE.CLIENTINFO);
-    }
-
-
-    private void initClientsListRecycler() {
-        //------------------Recycler-----------------------------
-        clientsListRecycler = root.findViewById(R.id.recyclerClients);
-        LinearLayoutManager clientsLayoutManager = new LinearLayoutManager(getContext());
-        clientsListRecycler.setLayoutManager(clientsLayoutManager);
-        clientsListRecycler.setHasFixedSize(true);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                clientsListRecycler.getContext(), clientsLayoutManager.getOrientation());
-        clientsListRecycler.addItemDecoration(dividerItemDecoration);
-        clientsRecyclerAdapter = new ClientsRecyclerAdapter(getContext());
-        clientsListRecycler.setAdapter(clientsRecyclerAdapter);
     }
 
     @Override
@@ -102,9 +94,6 @@ public class ClientsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((resultCode == RESULT_OK) && (requestCode == REQUEST_CODE.NEWCLIENT)) {
@@ -115,8 +104,17 @@ public class ClientsFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_import).setVisible(false);
+    private void initClientsListRecycler() {
+        //------------------Recycler-----------------------------
+        clientsListRecycler = root.findViewById(R.id.recyclerClients);
+        LinearLayoutManager clientsLayoutManager = new LinearLayoutManager(getContext());
+        clientsListRecycler.setLayoutManager(clientsLayoutManager);
+        clientsListRecycler.setHasFixedSize(true);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                clientsListRecycler.getContext(), clientsLayoutManager.getOrientation());
+        clientsListRecycler.addItemDecoration(dividerItemDecoration);
+        clientsRecyclerAdapter = new ClientsRecyclerAdapter(getContext());
+        clientsListRecycler.setAdapter(clientsRecyclerAdapter);
     }
+
 }

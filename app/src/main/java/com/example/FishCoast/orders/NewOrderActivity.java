@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -33,7 +34,9 @@ public class NewOrderActivity extends AppCompatActivity {
     private Cursor c;
     private int clientId;
     private int isEdit;
+    private int priceType;
     private TextView clientText;
+    private ArrayList<Integer> favoritePosition = new ArrayList<>();
     private NewOrderItemAdapter newOrderItemAdapter;
     private NewOrderPriceAdapter newOrderPriceAdapter;
 
@@ -54,16 +57,28 @@ public class NewOrderActivity extends AppCompatActivity {
         isEdit = getIntent().getIntExtra("isEdit", 0);
         c = db.query("clientstable", null, "id = " + clientId, null, null, null, null);
         c.moveToFirst();
+        priceType = c.getInt(c.getColumnIndex("price"));
         getSupportActionBar().setTitle(c.getString(c.getColumnIndex("street")));
+        c = db.query(true, "orderstable", null, "clientid = " + clientId, null, "name", null, null, null);
+        while (c.moveToNext()){
+            String name = c.getString(c.getColumnIndex("name"));
+            Cursor priceCursor = db.query("pricetable", null, "type = " + priceType + " AND " + "name = '" + name + "'", null, null ,null, null);
+            if (priceCursor.moveToNext()){
+                favoritePosition.add(priceCursor.getInt(priceCursor.getColumnIndex("id")));
+            }
+            priceCursor.close();
+        }
 
         initPriceListRecycler();
         initItemListRecycler();
     }
 
     public void filter(String str, int editablePosition) {
+        str = str.replace(" ", "%");
         newOrderPriceAdapter.swapCursor(db.query("pricetable", null,
-                "name" + " LIKE '%" + str + "%'" + " AND " + "type = " + c.getInt(c.getColumnIndex("price")), null, null,
-                null, null), editablePosition);
+                "name" + " LIKE '%" + str + "%'" + " AND " + "type = " + priceType, null, null,
+                null, null), editablePosition, str);
+
     }
 
     public void applyItem(String name, String cost, String unit, int editablePosition) {
@@ -167,7 +182,7 @@ public class NewOrderActivity extends AppCompatActivity {
             priceItems.add(item);
            // i++;
         }*/
-        newOrderPriceAdapter = new NewOrderPriceAdapter(this, getAllItems(c.getInt(c.getColumnIndex("price"))), this);
+        newOrderPriceAdapter = new NewOrderPriceAdapter(this, getAllItems(priceType), this, favoritePosition);
         newOrderPriceListRecycler.setAdapter(newOrderPriceAdapter);
 
     }

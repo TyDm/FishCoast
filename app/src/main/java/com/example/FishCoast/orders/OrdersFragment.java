@@ -55,7 +55,6 @@ public class OrdersFragment extends Fragment {
             }
         });*/
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
 
         setHasOptionsMenu(true);
 
@@ -64,6 +63,8 @@ public class OrdersFragment extends Fragment {
 
         return root;
     }
+
+    
 
     public void newOrder () {
 
@@ -81,20 +82,29 @@ public class OrdersFragment extends Fragment {
             Toast.makeText(root.getContext(), "Скопировано в буфер обмена", Toast.LENGTH_SHORT).show();
         }
         if (item.getItemId() == 2){
-            Intent newOrderintent = new Intent(root.getContext(), NewOrderActivity.class);
-            Cursor cursor = db.query("orderstable", null, "orderid = " + orderID, null, null, null, null);
             try {
+                Intent newOrderintent = new Intent(root.getContext(), NewOrderActivity.class);
+                Cursor cursor = db.query("orderstable", null, "orderid = " + orderID, null, null, null, null);
                 cursor.moveToFirst();
-                newOrderintent.putExtra("clientId", cursor.getInt(cursor.getColumnIndex("clientid")));
+                int clID = cursor.getInt(cursor.getColumnIndex("clientid"));
+                newOrderintent.putExtra("clientId", clID);
                 newOrderintent.putExtra("isEdit", 1);
                 newOrderintent.putExtra("orderid", orderID);
-                startActivityForResult(newOrderintent, REQUEST_CODE.EDITORDER);
+                cursor.close();
+                cursor = db.query("clientstable", null, "id = " + clID, null, null, null, null);
+                if (cursor.getCount() == 0) {
+                    Toast.makeText(root.getContext(), "Невозможно редактировать данный заказ", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    startActivityForResult(newOrderintent, REQUEST_CODE.EDITORDER);
+                }
+                cursor.close();
             }
             catch (Exception e){
                 Toast.makeText(root.getContext(), "Невозможно редактировать данный заказ", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-            cursor.close();
+
         }
         if (item.getItemId() == 3){
             db.delete("orderstable", "orderid = " + orderID, null);
@@ -114,8 +124,14 @@ public class OrdersFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        if (menu.findItem(R.id.action_delete) != null)
         menu.findItem(R.id.action_delete).setVisible(false);
+
+        if (menu.findItem(R.id.action_import) != null)
         menu.findItem(R.id.action_import).setVisible(false);
+
+        if (getActivity().findViewById(R.id.pricespinner) != null)
+            getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
 
     }
 

@@ -12,12 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.FishCoast.R;
+import com.example.FishCoast.StringFormat;
 
-public class PriceRecyclerAdapter extends RecyclerView.Adapter<PriceRecyclerAdapter.PriceViewHolder> {
+public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.PriceViewHolder> {
     private Context context;
     private Cursor c;
+    private String searchText = "";
 
-    public PriceRecyclerAdapter(Context context, Cursor cursor){
+    public PriceAdapter(Context context, Cursor cursor){
 
         this.context = context;
         c = cursor;
@@ -32,7 +34,7 @@ public class PriceRecyclerAdapter extends RecyclerView.Adapter<PriceRecyclerAdap
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_price_list, parent, false);
-        PriceRecyclerAdapter.PriceViewHolder viewHolder = new PriceRecyclerAdapter.PriceViewHolder(view);
+        PriceAdapter.PriceViewHolder viewHolder = new PriceAdapter.PriceViewHolder(view);
 
         return viewHolder;
     }
@@ -48,11 +50,12 @@ public class PriceRecyclerAdapter extends RecyclerView.Adapter<PriceRecyclerAdap
         return c.getCount();
     }
 
-    public void swapCursor(Cursor newCursor) {
+    public void swapCursor(Cursor newCursor, String str) {
         if (c != null){
             c.close();
         }
         c = newCursor;
+        searchText = str;
         if (newCursor != null){
             notifyDataSetChanged();
         }
@@ -71,7 +74,6 @@ public class PriceRecyclerAdapter extends RecyclerView.Adapter<PriceRecyclerAdap
             @Override
             public void onClick(View v) {
                 int positionIndex = getAdapterPosition();
-
                 Toast.makeText(context, "Элемент " + positionIndex, Toast.LENGTH_SHORT).show();
 
             }
@@ -92,12 +94,10 @@ public class PriceRecyclerAdapter extends RecyclerView.Adapter<PriceRecyclerAdap
                 return;
             }
 
-            this.positionName.setText(c.getString(c.getColumnIndex("name")));
+            this.positionName.setText(StringFormat.setSearchSpan(c.getString(c.getColumnIndex("name")), searchText, itemView.getResources().getColor(R.color.colorAccent)));
             this.positionCost.setText(c.getString(c.getColumnIndex("cost")));
             if (c.getInt(c.getColumnIndex("unit")) == 0) this.positionUnit.setText("кг");
             else this.positionUnit.setText("шт");
-
-
 
 
         }

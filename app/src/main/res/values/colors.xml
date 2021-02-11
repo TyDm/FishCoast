@@ -7,4 +7,5 @@
     <color name="colorBlack">#000000</color>
     <color name="ColorWhite">#FFFFFF</color>
     <color name="LightGray">#D3D3D3</color>
+    <color name="priceBackgroundFavorite">#BDECB6</color>
 </resources>

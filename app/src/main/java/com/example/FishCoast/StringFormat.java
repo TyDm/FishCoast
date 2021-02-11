@@ -1,5 +1,11 @@
 package com.example.FishCoast;
 
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -26,9 +32,6 @@ public abstract class StringFormat {
 
         return msgdouble;
     }
-    public static double stringQuantityToDouble(String quantity){
-        return 0.0;
-    }
     public static int unitStringtoInteger(String str){
         if (str.equals("шт")) return 1;
         else return 0;
@@ -45,6 +48,45 @@ public abstract class StringFormat {
             msg = "";
         }
         return msg;
+    }
+    public static Spannable setSearchSpan(String positionName, String searchText, int color){
+        Spannable nameSp = new SpannableString(positionName);
+        if (searchText.length() > 0) {
+            if (searchText.contains("%")){
+                String search = searchText;// текст для замены
+                int indexSpace = search.indexOf("%");
+                String word = search.substring(0, indexSpace); // одно слово
+                int index = nameSp.toString().toLowerCase().indexOf(word.toLowerCase());
+                nameSp.setSpan(new ForegroundColorSpan(color),
+                        index, index + word.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                search = search.replaceFirst("%", " ");
+                boolean contains = true;
+                do {
+                    int nameSpLastIndex = index + word.length();
+                    int indexSpaceOld = indexSpace;
+                    if (search.contains("%")){
+                        indexSpace = search.indexOf("%");
+                    }
+                    else {
+                        contains = false;
+                        indexSpace = search.length();
+                    }
+
+                    word = search.substring(indexSpaceOld + 1, indexSpace);
+                    index = nameSp.toString().toLowerCase().indexOf(word.toLowerCase(), nameSpLastIndex+1);
+                    nameSp.setSpan(new ForegroundColorSpan(color),
+                            index, index + word.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    search = search.replaceFirst("%", " ");
+
+                } while (contains);
+            }
+            else {
+                int index = nameSp.toString().toLowerCase().indexOf(searchText.toLowerCase());
+                nameSp.setSpan(new ForegroundColorSpan(color),
+                        index, index + searchText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return nameSp;
     }
 }
 

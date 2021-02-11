@@ -3,6 +3,10 @@ package com.example.FishCoast.orders;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +25,7 @@ import com.example.FishCoast.StringFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersViewHolder> {
@@ -109,7 +114,21 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         bindCursor.moveToFirst();
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.getDefault());
         try {
-            holder.date.setText(SimpleDateFormat.getDateTimeInstance().format(dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")))));
+            Date currentDate = new Date();
+            Date orderDate = dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")));
+            if (SimpleDateFormat.getDateInstance().format(orderDate).equals(SimpleDateFormat.getDateInstance().format(currentDate))) {
+                String s = SimpleDateFormat.getTimeInstance().format(orderDate);
+                if (Locale.getDefault().getLanguage().equals("ru"))
+                    s = s.substring(0, s.length()-3);
+                holder.date.setText(s);
+            }
+            else{
+                String s = SimpleDateFormat.getDateInstance().format(orderDate);
+                if (Locale.getDefault().getLanguage().equals("ru"))
+                    s = s.substring(0, s.length()-8);
+                holder.date.setText(s);
+            }
+
         } catch (ParseException e) {
             e.printStackTrace();
             holder.date.setText("");
@@ -157,6 +176,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         private EditText order, cost;
 
         public OrdersViewHolder(@NonNull View itemView) {
+
             super(itemView);
             client = itemView.findViewById(R.id.itemOrdersClient);
             date = itemView.findViewById(R.id.itemOrdersDate);
