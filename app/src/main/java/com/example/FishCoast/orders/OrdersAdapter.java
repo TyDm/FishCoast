@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
@@ -38,6 +39,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
     private ArrayList<Integer> orderIdList;
     private int clickableID;
     private String clickableText;
+    private String searchText = "";
 
 
 
@@ -70,14 +72,14 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         return orderIdList.get(position);
     }
 
-    public void swapCursor(Cursor newCursor) {
+    public void swapCursor(Cursor newCursor, String str) {
         if (cursor != null){
             cursor.close();
         }
         cursor = newCursor;
+        searchText = str;
         if (newCursor != null){
             orderIdList = getidList(newCursor);
-            //orderTextList = new String[orderIdList.size()];
             notifyDataSetChanged();
         }
     }
@@ -91,13 +93,13 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
 
     @Override
     public void onBindViewHolder(@NonNull OrdersViewHolder holder, int position) {
-        StringBuilder orderBuilder = new StringBuilder();
+        SpannableStringBuilder orderBuilder = new SpannableStringBuilder();
         StringBuilder costBuilder = new StringBuilder();
         double v = 0;
         double value = 0;
         Cursor bindCursor = db.query("orderstable", null, "orderid = " + orderIdList.get(position), null, null, null , "datetime DESC");
         while (bindCursor.moveToNext()){
-            orderBuilder.append(bindCursor.getString(bindCursor.getColumnIndex("name")));
+            orderBuilder.append(StringFormat.setSearchSpan(bindCursor.getString(bindCursor.getColumnIndex("name")), searchText, holder.itemView.getResources().getColor(R.color.colorAccent)));
             orderBuilder.append("  ");
             orderBuilder.append(StringFormat.doubleToString(bindCursor.getDouble(bindCursor.getColumnIndex("quantity")),
                     bindCursor.getInt(bindCursor.getColumnIndex("unit"))));
@@ -107,7 +109,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
             costBuilder.append("\n");
             value += v;
         }
-        holder.order.setText(orderBuilder.toString());
+        holder.order.setText(orderBuilder);
         holder.cost.setText(costBuilder.toString());
         holder.value.setText(StringFormat.doubleToString(value, -1));
         orderTextList[position] = orderBuilder.toString();

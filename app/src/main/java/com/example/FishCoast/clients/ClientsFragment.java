@@ -9,10 +9,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -33,6 +35,7 @@ public class ClientsFragment extends Fragment {
     private RecyclerView clientsListRecycler;
     private ClientsRecyclerAdapter clientsRecyclerAdapter;
     private DBHelper dbHelper;
+    private SQLiteDatabase db;
     private static ClientsFragment сontext;
 
 
@@ -51,6 +54,8 @@ public class ClientsFragment extends Fragment {
         //---------------------------------------------------------------------------------
         setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        dbHelper = new DBHelper(getContext());
+        db = dbHelper.getWritableDatabase();
         initClientsListRecycler();
         сontext = this;
         return root;
@@ -59,11 +64,29 @@ public class ClientsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.findItem(R.id.action_add).setVisible(true);
+        menu.findItem(R.id.action_delete).setVisible(true);
         if (getActivity().findViewById(R.id.pricespinner) != null)
             getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
 
-        if (menu.findItem(R.id.action_import) != null)
-            menu.findItem(R.id.action_import).setVisible(false);
+        MenuItem searchItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.replace(" ", "%");
+                clientsRecyclerAdapter.swapCursor(db.query("clientstable", null,
+                        "street" + " LIKE '%" + newText + "%'" + " OR " + "company" + " LIKE '%" + newText + "%'", null, null,
+                        null, null), newText);
+                return false;
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -113,7 +136,7 @@ public class ClientsFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 clientsListRecycler.getContext(), clientsLayoutManager.getOrientation());
         clientsListRecycler.addItemDecoration(dividerItemDecoration);
-        clientsRecyclerAdapter = new ClientsRecyclerAdapter(getContext());
+        clientsRecyclerAdapter = new ClientsRecyclerAdapter(getContext(), db.query("clientstable", null,null, null, null, null, null));
         clientsListRecycler.setAdapter(clientsRecyclerAdapter);
     }
 

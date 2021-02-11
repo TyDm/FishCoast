@@ -9,14 +9,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -57,8 +60,8 @@ public class OrdersFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         setHasOptionsMenu(true);
-
-
+        dbHelper = new DBHelper(root.getContext());
+        db = dbHelper.getWritableDatabase();
         initOrdersListRecycler();
 
         return root;
@@ -73,8 +76,6 @@ public class OrdersFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int orderID = ordersAdapter.getOrderID(ordersAdapter.getClickableID());
-        dbHelper = new DBHelper(root.getContext());
-        db = dbHelper.getWritableDatabase();
         if (item.getItemId() == 1){
             ClipData clipData = ClipData.newPlainText("text", ordersAdapter.getClickableText());
             ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
@@ -108,9 +109,8 @@ public class OrdersFragment extends Fragment {
         }
         if (item.getItemId() == 3){
             db.delete("orderstable", "orderid = " + orderID, null);
-            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"datetime DESC"));
+            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"datetime DESC"), "");
         }
-        db.close();
         return super.onContextItemSelected(item);
     }
 
@@ -123,23 +123,35 @@ public class OrdersFragment extends Fragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        if (menu.findItem(R.id.action_delete) != null)
-        menu.findItem(R.id.action_delete).setVisible(false);
-
-        if (menu.findItem(R.id.action_import) != null)
-        menu.findItem(R.id.action_import).setVisible(false);
-
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.findItem(R.id.action_add).setVisible(true);
         if (getActivity().findViewById(R.id.pricespinner) != null)
             getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
+        MenuItem searchItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.replace(" ", "%");
+                ordersAdapter.swapCursor(db.query("orderstable", null,
+                        "name" + " LIKE '%" + newText + "%'", null, null,
+                        null, "datetime DESC"), newText);
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE.EDITORDER && resultCode == RESULT_OK){
-            db = dbHelper.getWritableDatabase();
-            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"datetime DESC"));
+            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"datetime DESC"), "");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -97,7 +97,7 @@ public class PriceFragment extends Fragment {
             getActivity().findViewById(R.id.pricespinner).setVisibility(View.VISIBLE);
             onCreatePriceSpinner();
         }
-        menu.findItem(R.id.action_delete).setVisible(false);
+        menu.findItem(R.id.action_import).setVisible(true);
         menu.findItem(R.id.app_bar_search).setVisible(true);
         MenuItem searchItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) searchItem.getActionView();

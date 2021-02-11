@@ -3,6 +3,7 @@ package com.example.FishCoast;
 import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
@@ -57,6 +58,7 @@ public abstract class StringFormat {
                 int indexSpace = search.indexOf("%");
                 String word = search.substring(0, indexSpace); // одно слово
                 int index = nameSp.toString().toLowerCase().indexOf(word.toLowerCase());
+                if (index >= 0)
                 nameSp.setSpan(new ForegroundColorSpan(color),
                         index, index + word.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 search = search.replaceFirst("%", " ");
@@ -74,6 +76,7 @@ public abstract class StringFormat {
 
                     word = search.substring(indexSpaceOld + 1, indexSpace);
                     index = nameSp.toString().toLowerCase().indexOf(word.toLowerCase(), nameSpLastIndex+1);
+                    if (index >= 0)
                     nameSp.setSpan(new ForegroundColorSpan(color),
                             index, index + word.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     search = search.replaceFirst("%", " ");
@@ -82,11 +85,13 @@ public abstract class StringFormat {
             }
             else {
                 int index = nameSp.toString().toLowerCase().indexOf(searchText.toLowerCase());
+                if (index >= 0)
                 nameSp.setSpan(new ForegroundColorSpan(color),
                         index, index + searchText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
         return nameSp;
     }
+
 }
 

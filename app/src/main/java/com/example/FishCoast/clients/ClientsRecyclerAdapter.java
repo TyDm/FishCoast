@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
+import com.example.FishCoast.StringFormat;
 
 public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecyclerAdapter.ClientsViewHolder> {
 
@@ -24,23 +25,11 @@ public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecycler
     private ContentValues cv;
     private SQLiteDatabase db;
     private Cursor c;
-    private boolean newOrder;
+    private String searchText = "";
 
-    public boolean isNewOrder() {
-        return newOrder;
-    }
-
-    public void setNewOrder(boolean newOrder) {
-        this.newOrder = newOrder;
-    }
-
-    public ClientsRecyclerAdapter(Context context){
-
+    public ClientsRecyclerAdapter(Context context, Cursor cursor){
         this.context = context;
-        dbHelper = new DBHelper(context);
-        cv = new ContentValues();
-        db = dbHelper.getWritableDatabase();
-        newOrder = false;
+        c = cursor;
     }
 
     @NonNull
@@ -61,8 +50,19 @@ public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecycler
 
     @Override
     public int getItemCount() {
-        int count = db.query("clientstable", null, null, null, null,null,null).getCount();
-        return count;
+        return c.getCount();
+    }
+
+    public void swapCursor(Cursor newCursor, String str) {
+        if (c != null){
+            c.close();
+        }
+        c = newCursor;
+        searchText = str;
+        if (newCursor != null){
+            notifyDataSetChanged();
+        }
+
     }
 
     class ClientsViewHolder extends RecyclerView.ViewHolder {
@@ -74,16 +74,7 @@ public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecycler
             @Override
             public void onClick(View v) {
                 int positionIndex = getAdapterPosition();
-
-                //Toast.makeText(context, "Элемент " + positionIndex, Toast.LENGTH_SHORT).show();
-                if (!newOrder) {
-                    ClientsFragment.startClientInfoActivity(positionIndex);
-                } else
-                {
-
-                }
-
-
+                ClientsFragment.startClientInfoActivity(positionIndex);
             }
         };
 
@@ -96,15 +87,11 @@ public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecycler
         }
 
         void bind(int position) {
-            c = db.query("clientstable", null,null, null, null, null, null);
-            if (c.moveToPosition(position)) {
-                this.clientsName.setText(c.getString(c.getColumnIndex("street")));
-                this.clientsCompany.setText(c.getString(c.getColumnIndex("company")));
+            if (!c.moveToPosition(position)){
+                return;
             }
-            else {
-                Toast.makeText(context, "Ошибка", Toast.LENGTH_SHORT).show();
-            }
-
+             this.clientsName.setText(StringFormat.setSearchSpan(c.getString(c.getColumnIndex("street")), searchText, itemView.getResources().getColor(R.color.colorAccent)));
+             this.clientsCompany.setText(StringFormat.setSearchSpan(c.getString(c.getColumnIndex("company")), searchText, itemView.getResources().getColor(R.color.colorAccent)));
         }
 
     }
