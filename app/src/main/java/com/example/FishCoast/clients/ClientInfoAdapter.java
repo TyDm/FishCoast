@@ -19,6 +19,7 @@ import com.example.FishCoast.StringFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
     private ArrayList<Integer> orderIdList;
     private String[] orderTextList;
     private int clickableID;
-
+    private String searchText = "";
     private final int clientID;
     private final ClientInfoActivity clientInfoActivity;
 
@@ -59,7 +60,8 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
         StringBuilder str = new StringBuilder();
         while (bindCursor.moveToNext()){
 
-            str.append(bindCursor.getString(bindCursor.getColumnIndex("name")));
+            str.append(StringFormat.setSearchSpan(bindCursor.getString(bindCursor.getColumnIndex("name")), searchText,
+                    holder.itemView.getResources().getColor(R.color.colorAccent)));
             str.append("  ");
             str.append(StringFormat.doubleToString(bindCursor.getDouble(bindCursor.getColumnIndex("quantity")),
                     bindCursor.getInt(bindCursor.getColumnIndex("unit"))));
@@ -71,9 +73,22 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
         bindCursor.moveToFirst();
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat(clientInfoActivity.getString(R.string.dateTimeFormat), Locale.getDefault());
         try {
-            holder.dateText.setText(SimpleDateFormat.getDateInstance().format(Objects.requireNonNull(dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime"))))));
-        }
-        catch (ParseException e){
+            Date currentDate = new Date();
+            Date orderDate = dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")));
+            if (SimpleDateFormat.getDateInstance().format(orderDate).equals(SimpleDateFormat.getDateInstance().format(currentDate))) {
+                String s = SimpleDateFormat.getTimeInstance().format(orderDate);
+                if (Locale.getDefault().getLanguage().equals("ru"))
+                    s = s.substring(0, s.length()-3);
+                holder.dateText.setText(s);
+            }
+            else{
+                String s = SimpleDateFormat.getDateInstance().format(orderDate);
+                if (Locale.getDefault().getLanguage().equals("ru"))
+                    s = s.substring(0, s.length()-8);
+                holder.dateText.setText(s);
+            }
+
+        } catch (ParseException e) {
             e.printStackTrace();
             holder.dateText.setText("");
         }
@@ -95,10 +110,11 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
         return orderIdList.size();
     }
 
-    public void swapCursor(Cursor newCursor) {
+    public void swapCursor(Cursor newCursor, String str) {
         if (c != null){
             c.close();
         }
+        searchText = str;
         c = newCursor;
         if (newCursor != null){
             orderIdList = getidList(newCursor);

@@ -26,5 +26,13 @@
         android:title="@string/action_add"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/action_client_app_bar_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:orderInCategory="1"
+        android:title="Search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
+
 
 </menu>

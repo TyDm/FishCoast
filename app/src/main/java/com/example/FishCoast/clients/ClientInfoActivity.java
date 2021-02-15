@@ -9,12 +9,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -85,6 +87,24 @@ public class ClientInfoActivity extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_client_info, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_client_app_bar_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.replace(" ", "%");
+                clientInfoAdapter.swapCursor(db.query("orderstable", null,
+                        "name" + " LIKE '%" + newText + "%'" + " AND " + "clientid = " + clientId, null, null,
+                        null, "datetime DESC"), newText);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -133,7 +153,7 @@ public class ClientInfoActivity extends AppCompatActivity {
         }
         if (item.getItemId() == 3){
             db.delete("orderstable", "orderid = " + orderID, null);
-            clientInfoAdapter.swapCursor(getSortedCursor(clientId));
+            clientInfoAdapter.swapCursor(getSortedCursor(clientId), "");
         }
         return super.onContextItemSelected(item);
     }
@@ -146,7 +166,7 @@ public class ClientInfoActivity extends AppCompatActivity {
             }
         }
         initClientInfo(positionIndex);
-        clientInfoAdapter.swapCursor(getSortedCursor(clientId));
+        clientInfoAdapter.swapCursor(getSortedCursor(clientId), "");
         super.onActivityResult(requestCode, resultCode, data);
     }
 
