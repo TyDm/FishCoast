@@ -22,5 +22,5 @@
     <string name="action_join">Объеденить</string>
     <string name="yes">да</string>
     <string name="no">нет</string>
-    <string name="splitposition">Разбить позицию???</string>
+    <string name="splitposition">Разбить позицию?</string>
 </resources>
