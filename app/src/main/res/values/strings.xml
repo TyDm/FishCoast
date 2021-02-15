@@ -20,4 +20,7 @@
     <string name="dateTimeFormat">yyyy.MM.dd HH:mm:ss</string>
     <string name="streetCompany">%1$s, %2$s</string>
     <string name="action_join">Объеденить</string>
+    <string name="yes">да</string>
+    <string name="no">нет</string>
+    <string name="splitposition">Разбить позицию?</string>
 </resources>

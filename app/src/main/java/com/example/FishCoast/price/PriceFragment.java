@@ -1,6 +1,9 @@
 package com.example.FishCoast.price;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,7 +19,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,7 +46,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.Inflater;
+import java.util.ArrayList;
 
 
 import static android.app.Activity.RESULT_OK;
@@ -49,15 +54,12 @@ import static android.app.Activity.RESULT_OK;
 public class PriceFragment extends Fragment {
 
     private View root;
-    private PriceViewModel priceViewModel;
-    private RecyclerView pricelistRecycler;
     private PriceAdapter priceAdapter;
-    private ActionBar actionbar;
     private Spinner priceSpinner;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
-    private ContentValues cv;
-    private static final String TAG = "MyApp";
+
+    private static final String TAG = "TAG";
 
     static {
         System.setProperty(
@@ -76,11 +78,10 @@ public class PriceFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        priceViewModel =
-                ViewModelProviders.of(this).get(PriceViewModel.class);
+        PriceViewModel priceViewModel = ViewModelProviders.of(this).get(PriceViewModel.class);
 
         root = inflater.inflate(R.layout.fragment_price, container, false);
-        actionbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionbar.setDisplayShowTitleEnabled(false);
 
         setHasOptionsMenu(true);
@@ -162,8 +163,81 @@ public class PriceFragment extends Fragment {
         }
     }
 
+    private void onCreateDialog(ArrayList<String> splitList, ArrayList<Long> splitListID){
+
+        if ((splitList.size() > 0) && (splitListID.size() > 0)){
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            View view = getActivity().getLayoutInflater().inflate(R.layout.dialog, null);
+            dialogBuilder.setView(view);
+            dialogBuilder.setCancelable(false);
+            AlertDialog dialog = dialogBuilder.create();
+            Button yes = view.findViewById(R.id.dialog_button_right);
+            Button no = view.findViewById(R.id.dialog_button_left);
+            TextView title = view.findViewById(R.id.dialog_title);
+            TextView message = view.findViewById(R.id.dialog_message);
+            title.setText(getActivity().getString(R.string.splitposition));
+            message.setText(splitList.get(0));
+            yes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Cursor splitCursor = db.query("pricetable", null, "id = " + splitListID.get(0), null, null, null, null);
+                    splitCursor.moveToFirst();
+                    int type = splitCursor.getInt(splitCursor.getColumnIndex("type"));
+                    String category = splitCursor.getString(splitCursor.getColumnIndex("category"));
+                    double cost = splitCursor.getDouble(splitCursor.getColumnIndex("cost"));
+                    int unit = splitCursor.getInt(splitCursor.getColumnIndex("unit"));
+                    splitCursor.close();
+                    db.delete("pricetable", "id = " + splitListID.get(0), null);
+                    String sort = "";
+                    int indexleft = 0;
+                    int indexright = 0;
+                    while ((!sort.contains(",")) || (!sort.substring(sort.indexOf(",") + 1).contains(","))){
+                        indexleft = splitList.get(0).indexOf("(", indexright);
+                        indexright = splitList.get(0).indexOf(")", indexleft);
+                        sort = splitList.get(0).substring(indexleft+1, indexright).trim();
+                    }
+                    String contents = splitList.get(0).substring(0, indexleft).trim();
+                    while (sort.contains(",")){
+                        ContentValues cv = new ContentValues();
+                        cv.put("type", type);
+                        cv.put("category", category);
+                        cv.put("cost", cost);
+                        cv.put("unit", unit);
+                        cv.put("name", contents + " " + sort.substring(0, sort.indexOf(",")).trim());
+                        db.insert("pricetable", null, cv);
+                        sort = sort.substring(sort.indexOf(",") + 1);
+                    }
+                    if (sort.length() > 0){
+                        ContentValues cv = new ContentValues();
+                        cv.put("type", type);
+                        cv.put("category", category);
+                        cv.put("cost", cost);
+                        cv.put("unit", unit);
+                        cv.put("name", contents + " " + sort.trim());
+                        db.insert("pricetable", null, cv);
+                    }
+                    splitList.remove(0);
+                    splitListID.remove(0);
+                    dialog.dismiss();
+                    onCreateDialog(splitList, splitListID);
+                }
+            });
+            no.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    splitList.remove(0);
+                    splitListID.remove(0);
+                    dialog.dismiss();
+                    onCreateDialog(splitList, splitListID);
+                }
+            });
+            dialog.show();
+        }
+
+    }
+
     private void initPricelistRecycler(){
-        pricelistRecycler = root.findViewById(R.id.recyclerPrices);
+        RecyclerView pricelistRecycler = root.findViewById(R.id.recyclerPrices);
         LinearLayoutManager priceLayoutManager = new LinearLayoutManager(getContext());
         pricelistRecycler.setLayoutManager(priceLayoutManager);
         pricelistRecycler.setHasFixedSize(true);
@@ -224,17 +298,17 @@ public class PriceFragment extends Fragment {
 
 
             }
-            while ( ((!cell.getStringCellValue().equals("Наименование")) &&
-                    (!cell.getStringCellValue().equals("наименование")) && (!cell.getStringCellValue().equals("НАИМЕНОВАНИЕ")) ) && (i < sheet.getLastRowNum()));
 
+            while ((!cell.getStringCellValue().toLowerCase().equals("наименование")) && (i < sheet.getLastRowNum()));
 
-
-            if ((cell.getStringCellValue().equals("Наименование")) || (cell.getStringCellValue().equals("наименование")) || (cell.getStringCellValue().equals("НАИМЕНОВАНИЕ")) ) {
+            if (cell.getStringCellValue().toLowerCase().equals("наименование")) {
                 String positionCategory = "";
-                cv = new ContentValues();
+                ContentValues cv = new ContentValues();
                 if (deleteOld)
                     db.delete("pricetable", "type = " + priceSpinnerPosition, null);
                 Log.i(TAG, "Начало импорта");
+                ArrayList<String> splitList = new ArrayList<>();
+                ArrayList<Long> splitListID = new ArrayList<>();
 
                 do {
                     i++;
@@ -256,7 +330,6 @@ public class PriceFragment extends Fragment {
                         cv.put("name", row.getCell(1).getStringCellValue());
                         cv.put("category", positionCategory);
                         Log.i(TAG, "Категория добавлена");
-
                         if (row.getCell(3).getCellTypeEnum() == CellType.NUMERIC) {
                             cv.put("cost", row.getCell(3).getNumericCellValue());
                         }
@@ -272,15 +345,26 @@ public class PriceFragment extends Fragment {
                         {
                             cv.put("unit", 1);
                         }
-
-                        db.insert("pricetable", null, cv);
+                        long id = db.insert("pricetable", null, cv);
+                        if ((row.getCell(1).getStringCellValue().contains("(") && (row.getCell(1)).getStringCellValue().contains(","))){
+                            int index = row.getCell(1).getStringCellValue().indexOf("(");
+                            if (row.getCell(1).getStringCellValue().indexOf(",", index) != -1) {
+                                String name = row.getCell(1).getStringCellValue().replaceFirst(",", "");
+                                if (name.contains(",")) {
+                                    splitList.add(row.getCell(1).getStringCellValue());
+                                    splitListID.add(id);
+                                }
+                            }
+                        }
 
                     }
 
 
                 }
                 while (i < sheet.getLastRowNum());
-
+                if (splitList.size() > 0){
+                    onCreateDialog(splitList, splitListID);
+                }
                 wb.close();
 
             }
@@ -294,7 +378,8 @@ public class PriceFragment extends Fragment {
             priceAdapter.swapCursor(getAllItems(priceSpinner.getSelectedItemPosition()), "");
 
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
         }
