@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -17,11 +18,14 @@ import android.widget.Toast;
 import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
 
+import java.util.ArrayList;
+
 public class ClientEditActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
 
-    private EditText city, street, company, phone;
+    private EditText street, phone;
+    private AutoCompleteTextView company, city;
     private Button button_add;
     private ContentValues cv;
     private SQLiteDatabase db;
@@ -57,7 +61,6 @@ public class ClientEditActivity extends AppCompatActivity {
         launchType = getIntent().getExtras().getInt("type");
         positionIndex = getIntent().getExtras().getInt("positionIndex");
         onCreatePriceSpinner();
-
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null ){
@@ -65,6 +68,24 @@ public class ClientEditActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        ArrayList<String> autoCompleteCompanyList = new ArrayList<>();
+        c = db.query("clientstable", null, null, null, "company", null, null);
+        while (c.moveToNext()){
+            autoCompleteCompanyList.add(c.getString(c.getColumnIndex("company")));
+        }
+        ArrayAdapter<String> companyAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, autoCompleteCompanyList);
+        company.setAdapter(companyAdapter);
+        company.setThreshold(2);
+        c.close();
+        ArrayList<String> autoCompleteCityList = new ArrayList<>();
+        c = db.query("clientstable", null, null, null, "city", null, null);
+        while (c.moveToNext()){
+            autoCompleteCityList.add(c.getString(c.getColumnIndex("city")));
+        }
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, autoCompleteCityList);
+        city.setAdapter(cityAdapter);
+        city.setThreshold(2);
+        c.close();
 
         if (launchType == 1) {
             button_add.setText("Сохранить");
@@ -77,13 +98,9 @@ public class ClientEditActivity extends AppCompatActivity {
             phone.setText(c.getString(c.getColumnIndex("phone")));
             clientPriceSpinner.setSelection(c.getInt(c.getColumnIndex("price")));
             clientid = c.getString(c.getColumnIndex("id"));
+            c.close();
 
         }
-
-
-
-
-
     }
 
     public void onClickButtonAdd(View v){
@@ -94,9 +111,6 @@ public class ClientEditActivity extends AppCompatActivity {
             cv.put("street", street.getText().toString());
             cv.put("phone", phone.getText().toString());
             cv.put("price", clientPriceSpinner.getSelectedItemPosition());
-
-
-
 
             if (launchType == 0) {
                 long rowId = db.insert("clientstable", null, cv);
@@ -114,10 +128,7 @@ public class ClientEditActivity extends AppCompatActivity {
                 setResult(RESULT_OK);
                 finish();
             }
-
-
             }
-
 
         else {
             Toast.makeText(this, "Все поля должны быть заполнены",
@@ -126,8 +137,6 @@ public class ClientEditActivity extends AppCompatActivity {
         }
 
     }
-
-
 
     @Override
     public boolean onSupportNavigateUp() {
