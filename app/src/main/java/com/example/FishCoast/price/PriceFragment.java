@@ -99,6 +99,7 @@ public class PriceFragment extends Fragment {
         }
         menu.findItem(R.id.action_import).setVisible(true);
         menu.findItem(R.id.app_bar_search).setVisible(true);
+        menu.findItem(R.id.action_join).setVisible(true);
         MenuItem searchItem = menu.findItem(R.id.app_bar_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
@@ -132,6 +133,11 @@ public class PriceFragment extends Fragment {
             xlsxPickerIntent.setType("*/*");
             startActivityForResult(xlsxPickerIntent, REQUEST_CODE.OPENEXTERNAL);
         }
+        if (item.getItemId() == R.id.action_join){
+            Intent xlsxPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            xlsxPickerIntent.setType("*/*");
+            startActivityForResult(xlsxPickerIntent, REQUEST_CODE.OPENEXTERNALJOIN);
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -145,7 +151,13 @@ public class PriceFragment extends Fragment {
         if (requestCode == REQUEST_CODE.OPENEXTERNAL){
             if (resultCode == RESULT_OK){
                 Uri xlsxFileUri = data.getData();
-                    importXlsx(xlsxFileUri, priceSpinner.getSelectedItemPosition());
+                    importXlsx(xlsxFileUri, priceSpinner.getSelectedItemPosition(), true);
+            }
+        }
+        if (requestCode == REQUEST_CODE.OPENEXTERNALJOIN){
+            if (resultCode == RESULT_OK){
+                Uri xlsxFileUri = data.getData();
+                importXlsx(xlsxFileUri, priceSpinner.getSelectedItemPosition(), false);
             }
         }
     }
@@ -189,7 +201,7 @@ public class PriceFragment extends Fragment {
         return db.query("pricetable", null,"type = " + priceType,null,null,null,null);
     }
 
-    private void importXlsx(Uri uri, int priceSpinnerPosition) {
+    private void importXlsx(Uri uri, int priceSpinnerPosition, boolean deleteOld) {
         try {
             InputStream is = getActivity().getContentResolver().openInputStream(uri);
 
@@ -220,8 +232,8 @@ public class PriceFragment extends Fragment {
             if ((cell.getStringCellValue().equals("Наименование")) || (cell.getStringCellValue().equals("наименование")) || (cell.getStringCellValue().equals("НАИМЕНОВАНИЕ")) ) {
                 String positionCategory = "";
                 cv = new ContentValues();
-
-                db.delete("pricetable", "type = " + priceSpinnerPosition, null);
+                if (deleteOld)
+                    db.delete("pricetable", "type = " + priceSpinnerPosition, null);
                 Log.i(TAG, "Начало импорта");
 
                 do {
