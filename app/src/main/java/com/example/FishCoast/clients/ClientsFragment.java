@@ -1,7 +1,11 @@
 package com.example.FishCoast.clients;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +29,8 @@ import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
 import com.example.FishCoast.REQUEST_CODE;
 
+
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -65,7 +71,6 @@ public class ClientsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.findItem(R.id.action_add).setVisible(true);
-        menu.findItem(R.id.action_delete).setVisible(true);
         if (getActivity().findViewById(R.id.pricespinner) != null)
             getActivity().findViewById(R.id.pricespinner).setVisibility(View.GONE);
 
@@ -135,6 +140,14 @@ public class ClientsFragment extends Fragment {
         clientsListRecycler.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 clientsListRecycler.getContext(), clientsLayoutManager.getOrientation());
+
+        int[] ATTRS = new int[]{android.R.attr.listDivider};
+        TypedArray a = Objects.requireNonNull(getContext()).obtainStyledAttributes(ATTRS);
+        Drawable divider = a.getDrawable(0);
+        int inset = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        InsetDrawable insetDivider = new InsetDrawable(divider, inset, 0, inset, 0);
+        a.recycle();
+        dividerItemDecoration.setDrawable(insetDivider);
         clientsListRecycler.addItemDecoration(dividerItemDecoration);
         clientsRecyclerAdapter = new ClientsRecyclerAdapter(getContext(), db.query("clientstable", null,null, null, null, null, null));
         clientsListRecycler.setAdapter(clientsRecyclerAdapter);
