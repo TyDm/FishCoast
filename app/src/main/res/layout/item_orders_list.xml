@@ -9,18 +9,21 @@
         android:id="@+id/itemOrdersText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="11dp"
         android:background="@android:color/transparent"
         android:focusable="false"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
         android:textColor="@color/colorBlack"
-        android:textSize="13sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemOrdersValue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemOrdersClient"
-        tools:ignore="LabelFor">
+        tools:ignore="LabelFor"
+        tools:text="Рыбная паутинка темная сол-суш /светлая/ с перцем/ с лососем">
 
     </EditText>
 
@@ -28,16 +31,18 @@
         android:id="@+id/itemOrdersCost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
         android:focusable="false"
+        android:gravity="end"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        android:gravity="end"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         android:textColor="@android:color/tab_indicator_text"
-        android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemOrdersDate">
+        app:layout_constraintTop_toBottomOf="@+id/itemOrdersClient"
+        tools:ignore="LabelFor"
+        tools:text="880">
 
     </EditText>
 
@@ -45,11 +50,12 @@
         android:id="@+id/itemOrdersDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:textSize="13sp"
+        android:layout_marginEnd="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         app:layout_constraintBottom_toBottomOf="@+id/itemOrdersClient"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/itemOrdersClient">
+        app:layout_constraintTop_toTopOf="@+id/itemOrdersClient"
+        tools:text="17 янв.">
 
     </TextView>
 
@@ -57,11 +63,12 @@
         android:id="@+id/itemOrdersValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:textSize="13sp"
+        android:layout_marginEnd="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
         app:layout_constraintBottom_toBottomOf="@+id/itemOrdersText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemOrdersCost">
+        app:layout_constraintTop_toBottomOf="@+id/itemOrdersCost"
+        tools:text="1170">
 
     </TextView>
 
@@ -69,14 +76,15 @@
         android:id="@+id/itemOrdersClient"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:maxLines="1"
-        android:textColor="@color/colorBlack"
-        android:textSize="15sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         app:layout_constraintEnd_toStartOf="@+id/itemOrdersDate"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Московское шоссе 25а">
 
     </TextView>
 

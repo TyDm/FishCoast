@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.FishCoast.DBHelper;
 import com.example.FishCoast.R;
 import com.example.FishCoast.REQUEST_CODE;
+import com.example.FishCoast.StringFormat;
 
 
 import java.util.Objects;
@@ -140,14 +141,7 @@ public class ClientsFragment extends Fragment {
         clientsListRecycler.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 clientsListRecycler.getContext(), clientsLayoutManager.getOrientation());
-
-        int[] ATTRS = new int[]{android.R.attr.listDivider};
-        TypedArray a = Objects.requireNonNull(getContext()).obtainStyledAttributes(ATTRS);
-        Drawable divider = a.getDrawable(0);
-        int inset = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        InsetDrawable insetDivider = new InsetDrawable(divider, inset, 0, inset, 0);
-        a.recycle();
-        dividerItemDecoration.setDrawable(insetDivider);
+        dividerItemDecoration.setDrawable(StringFormat.getCustomDivider(getContext(), getResources()));
         clientsListRecycler.addItemDecoration(dividerItemDecoration);
         clientsRecyclerAdapter = new ClientsRecyclerAdapter(getContext(), db.query("clientstable", null,null, null, null, null, null));
         clientsListRecycler.setAdapter(clientsRecyclerAdapter);

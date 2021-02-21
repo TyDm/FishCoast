@@ -1,14 +1,19 @@
 package com.example.FishCoast;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
-import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
+
+import static java.security.AccessController.getContext;
 
 public abstract class StringFormat {
     public static String itemName(String name){
@@ -91,6 +96,15 @@ public abstract class StringFormat {
             }
         }
         return nameSp;
+    }
+
+    public static InsetDrawable getCustomDivider(Context context, Resources resources){
+        int[] ATTRS = new int[]{android.R.attr.listDivider};
+        TypedArray a = context.obtainStyledAttributes(ATTRS);
+        Drawable divider = a.getDrawable(0);
+        int inset = resources.getDimensionPixelSize(R.dimen.activity_horizontal_margin);
+        a.recycle();
+        return new InsetDrawable(divider, inset, 0, inset, 0);
     }
 
 }
