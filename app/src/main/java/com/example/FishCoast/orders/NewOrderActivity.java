@@ -23,6 +23,7 @@ import com.example.FishCoast.R;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -118,13 +119,15 @@ public class NewOrderActivity extends AppCompatActivity {
             return itemsSavecount;
         }
         ArrayList<OrderPositionItems> items = newOrderItemAdapter.getItems();
-        String orderDateTime;
+        String orderDate;
+        String deliveryDate;
         int orderid;
         if (isEdit == 1){
             orderid = getIntent().getIntExtra("orderid", 0);
             Cursor cursor = db.query("orderstable", null, "orderid = " + orderid, null, null, null, null);
             cursor.moveToFirst();
-            orderDateTime = cursor.getString(cursor.getColumnIndex("datetime"));
+            orderDate = cursor.getString(cursor.getColumnIndex("orderdate"));
+            deliveryDate = cursor.getString(cursor.getColumnIndex("deliverydate"));
             db.delete("orderstable", "orderid = " + orderid, null);
             cursor.close();
         }
@@ -141,7 +144,11 @@ public class NewOrderActivity extends AppCompatActivity {
             orderCursor.close();
             SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
             Date date = new Date();
-            orderDateTime = dateFormat.format(date);
+            Calendar instance = Calendar.getInstance();
+            instance.setTime(date);
+            instance.add(Calendar.DAY_OF_MONTH, 1);
+            deliveryDate = dateFormat.format(instance.getTime());
+            orderDate = dateFormat.format(date);
         }
         ContentValues cv = new ContentValues();
         int i = 0;
@@ -153,7 +160,8 @@ public class NewOrderActivity extends AppCompatActivity {
                 cv.put("cost", items.get(i).getCost());
                 cv.put("unit", items.get(i).getUnit());
                 cv.put("quantity", items.get(i).getQuantity());
-                cv.put("datetime", orderDateTime);
+                cv.put("orderdate", orderDate);
+                cv.put("deliverydate", deliveryDate);
                 db.insert("orderstable", null, cv);
                 itemsSavecount++;
             }

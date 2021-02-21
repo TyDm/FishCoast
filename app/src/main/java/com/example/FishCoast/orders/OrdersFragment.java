@@ -110,7 +110,7 @@ public class OrdersFragment extends Fragment {
         }
         if (item.getItemId() == 3){
             db.delete("orderstable", "orderid = " + orderID, null);
-            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"datetime DESC"), "");
+            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"orderdate DESC"), "");
         }
         return super.onContextItemSelected(item);
     }
@@ -142,7 +142,7 @@ public class OrdersFragment extends Fragment {
                 newText = newText.replace(" ", "%");
                 ordersAdapter.swapCursor(db.query("orderstable", null,
                         "name" + " LIKE '%" + newText + "%'", null, null,
-                        null, "datetime DESC"), newText);
+                        null, "orderdate DESC"), newText);
                 return false;
             }
         });
@@ -152,7 +152,7 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE.EDITORDER && resultCode == RESULT_OK){
-            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"datetime DESC"), "");
+            ordersAdapter.swapCursor(db.query("orderstable", null, null, null,null , null,"orderdate DESC"), "");
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

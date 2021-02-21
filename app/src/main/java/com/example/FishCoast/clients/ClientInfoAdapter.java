@@ -74,7 +74,7 @@ class ClientInfoAdapter extends RecyclerView.Adapter<ClientInfoAdapter.ClientInf
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat(clientInfoActivity.getString(R.string.dateTimeFormat), Locale.getDefault());
         try {
             Date currentDate = new Date();
-            Date orderDate = dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")));
+            Date orderDate = dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("orderdate")));
             if (SimpleDateFormat.getDateInstance().format(orderDate).equals(SimpleDateFormat.getDateInstance().format(currentDate))) {
                 String s = SimpleDateFormat.getTimeInstance().format(orderDate);
                 if (Locale.getDefault().getLanguage().equals("ru"))

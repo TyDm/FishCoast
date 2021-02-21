@@ -21,16 +21,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 "unit tinyinteger" + ");");
         db.execSQL("create table orderstable (" + "id integer primary key autoincrement," +
                 "orderid integer," + "clientid integer," + "name tinytext," + "cost float," +
-                "unit tinyinteger," + "quantity float," + "datetime datetime" + ");");
+                "unit tinyinteger," + "quantity float," + "orderdate datetime," + "deliverydate datetime" + ");");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if ((oldVersion == 2) & (newVersion == 3)){
-            db.execSQL("create table pricetable (" + "id integer primary key autoincrement," +
-                    "type tinyinteger," + "name tinytext," + "category tinytext," + "cost float," +
-                    "unit tinyinteger" + ");");
 
         }
     }

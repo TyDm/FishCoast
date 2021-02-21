@@ -47,7 +47,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         this.context = context;
         dbHelper = new DBHelper(context);
         db = dbHelper.getWritableDatabase();
-        cursor = db.query("orderstable", null, null, null,null , null,"datetime DESC");
+        cursor = db.query("orderstable", null, null, null,null , null,"orderdate DESC");
         orderIdList = getidList(cursor);
         orderTextList = new String[orderIdList.size()];
     }
@@ -97,7 +97,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         StringBuilder costBuilder = new StringBuilder();
         double v = 0;
         double value = 0;
-        Cursor bindCursor = db.query("orderstable", null, "orderid = " + orderIdList.get(position), null, null, null , "datetime DESC");
+        Cursor bindCursor = db.query("orderstable", null, "orderid = " + orderIdList.get(position), null, null, null , "orderdate DESC");
         while (bindCursor.moveToNext()){
             orderBuilder.append(StringFormat.setSearchSpan(bindCursor.getString(bindCursor.getColumnIndex("name")), searchText, holder.itemView.getResources().getColor(R.color.colorAccent)));
             orderBuilder.append("  ");
@@ -117,7 +117,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrdersView
         SimpleDateFormat dateTimeFormat = new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.getDefault());
         try {
             Date currentDate = new Date();
-            Date orderDate = dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("datetime")));
+            Date orderDate = dateTimeFormat.parse(bindCursor.getString(bindCursor.getColumnIndex("orderdate")));
             if (SimpleDateFormat.getDateInstance().format(orderDate).equals(SimpleDateFormat.getDateInstance().format(currentDate))) {
                 String s = SimpleDateFormat.getTimeInstance().format(orderDate);
                 if (Locale.getDefault().getLanguage().equals("ru"))

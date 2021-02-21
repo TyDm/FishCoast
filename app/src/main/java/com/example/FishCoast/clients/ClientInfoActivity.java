@@ -68,15 +68,15 @@ public class ClientInfoActivity extends AppCompatActivity {
     public Cursor getSortedCursor(int id, int orderid){
         if (orderid > 0){
             return db.query("orderstable", null, "clientid = " + id + " AND " + "orderid = " + orderid,
-                    null,null , null,"datetime DESC");
+                    null,null , null,"orderdate DESC");
         }
-        else return db.query("orderstable", null, "clientid = " + id, null,null , null,"datetime DESC");
+        else return db.query("orderstable", null, "clientid = " + id, null,null , null,"orderdate DESC");
 
 
     }
 
     public Cursor getSortedCursor(int id){
-        return db.query("orderstable", null, "clientid = " + id, null,null , null,"datetime DESC");
+        return db.query("orderstable", null, "clientid = " + id, null,null , null,"orderdate DESC");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ClientInfoActivity extends AppCompatActivity {
                 newText = newText.replace(" ", "%");
                 clientInfoAdapter.swapCursor(db.query("orderstable", null,
                         "name" + " LIKE '%" + newText + "%'" + " AND " + "clientid = " + clientId, null, null,
-                        null, "datetime DESC"), newText);
+                        null, "orderdate DESC"), newText);
                 return false;
             }
         });
