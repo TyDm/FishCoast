@@ -127,6 +127,7 @@ public class ClientsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if ((resultCode == RESULT_OK) && (requestCode == REQUEST_CODE.NEWCLIENT)) {
            initClientsListRecycler();
+           startClientInfoActivity(clientsRecyclerAdapter.getItemCount()-1);
         }
         if (requestCode == REQUEST_CODE.CLIENTINFO) {
            initClientsListRecycler();

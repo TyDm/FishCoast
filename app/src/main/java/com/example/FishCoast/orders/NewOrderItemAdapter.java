@@ -79,6 +79,8 @@ public class NewOrderItemAdapter extends RecyclerView.Adapter<NewOrderItemAdapte
                                 items.get(position).setCost(0.0);
                                 items.get(position).setUnit(0);
                                 items.get(position).setQuantity(-1.0);
+                                holder.quantityText.setHint("");
+
                             }
                             if (hasFocus){
                                 newOrderActivity.setnewOrderPriceAdapterClickable(false);

@@ -144,6 +144,12 @@ public class NewOrderActivity extends AppCompatActivity {
             orderCursor.close();
             SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.dateTimeFormat), Locale.getDefault());
             Date date = new Date();
+            //---Кастомная дата-------
+            //Calendar calendar = Calendar.getInstance();
+            //calendar.setTime(date);
+            //calendar.add(Calendar.DAY_OF_MONTH, -21);
+            //date = calendar.getTime();
+            //-------------------------
             Calendar instance = Calendar.getInstance();
             instance.setTime(date);
             instance.add(Calendar.DAY_OF_MONTH, 1);

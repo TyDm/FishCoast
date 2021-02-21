@@ -324,7 +324,7 @@ public class PriceFragment extends Fragment {
 
                     Log.i(TAG, "След условие");
 
-                    if  (sheet.getRow(i).getCell(0).getCellTypeEnum() == CellType.NUMERIC){
+                    if  ((sheet.getRow(i).getCell(0).getCellTypeEnum() == CellType.NUMERIC) || (sheet.getRow(i).getCell(0).getCellTypeEnum() == CellType.FORMULA)){
                         row = sheet.getRow(i);
                         cv.put("type", priceSpinnerPosition);
                         cv.put("name", row.getCell(1).getStringCellValue());
