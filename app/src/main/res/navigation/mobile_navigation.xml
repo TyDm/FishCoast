@@ -6,6 +6,12 @@
     app:startDestination="@+id/navigation_clients">
 
     <fragment
+        android:id="@+id/navigation_info"
+        android:name="com.example.FishCoast.info.InfoFragment"
+        android:label="@string/title_info"
+        tools:layout="@layout/fragment_info"/>
+
+    <fragment
         android:id="@+id/navigation_clients"
         android:name="com.example.FishCoast.clients.ClientsFragment"
         android:label="@string/title_clients"
@@ -16,8 +22,6 @@
         android:name="com.example.FishCoast.orders.OrdersFragment"
         android:label="@string/title_orders"
         tools:layout="@layout/fragment_orders" />
-
-
 
     <fragment
         android:id="@+id/navigation_price"

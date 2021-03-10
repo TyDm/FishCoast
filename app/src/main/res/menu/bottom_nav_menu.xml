@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/navigation_info"
+        android:icon="@drawable/ic_baseline_insert_chart_outlined_24"
+        android:title="@string/title_info"/>
+
+    <item
         android:id="@+id/navigation_clients"
         android:icon="@drawable/ic_people_outline_black_24dp"
         android:title="@string/title_clients" />

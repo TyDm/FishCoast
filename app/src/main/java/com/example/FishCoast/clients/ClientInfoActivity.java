@@ -172,14 +172,14 @@ public class ClientInfoActivity extends AppCompatActivity {
 
 
     private void initClientInfo(int positionIndex) {
-        c = db.query("clientstable", null, null, null, null, null, null);
-        c.moveToPosition(positionIndex);
+        c = db.query("clientstable", null, "id = " + positionIndex, null, null, null, null);
+        c.moveToFirst();
         clientStreet.setText(c.getString(c.getColumnIndex("street")));
         clientCompany.setText(c.getString(c.getColumnIndex("company")));
         clientCity.setText(c.getString(c.getColumnIndex("city")));
         clientPhone.setText(c.getString(c.getColumnIndex("phone")));
         clientId = c.getInt(c.getColumnIndex("id"));
-        clientTextId.setText("id: " + clientId);
+        clientTextId.setText("id: " + positionIndex);
         c.close();
     }
 

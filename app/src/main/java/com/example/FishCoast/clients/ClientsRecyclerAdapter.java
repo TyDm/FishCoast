@@ -69,12 +69,13 @@ public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecycler
 
         private TextView clientsName;
         private TextView clientsCompany;
+        private int id;
 
         View.OnClickListener clientsRecyclerListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int positionIndex = getAdapterPosition();
-                ClientsFragment.startClientInfoActivity(positionIndex);
+                int positionID = id;
+                ClientsFragment.startClientInfoActivity(positionID);
             }
         };
 
@@ -92,6 +93,7 @@ public class ClientsRecyclerAdapter extends RecyclerView.Adapter<ClientsRecycler
             }
              this.clientsName.setText(StringFormat.setSearchSpan(c.getString(c.getColumnIndex("street")), searchText, itemView.getResources().getColor(R.color.colorAccent)));
              this.clientsCompany.setText(StringFormat.setSearchSpan(c.getString(c.getColumnIndex("company")), searchText, itemView.getResources().getColor(R.color.colorAccent)));
+             this.id = c.getInt(c.getColumnIndex("id"));
         }
 
     }
